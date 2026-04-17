@@ -230,6 +230,7 @@ export const useContentStore = create<ContentStore>()(
         { name: "Portfolio", path: "/portfolio" },
         { name: "Personal Branding", path: "/personal-branding" },
         { name: "Process", path: "/process" },
+        { name: "Reviews", path: "/reviews" },
         { name: "Contact", path: "/contact" },
       ],
       updateNavItems: (items) => set({ navItems: items }),
