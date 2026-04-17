@@ -4,141 +4,177 @@ import { motion } from "motion/react";
 import { useContentStore } from "../store/contentStore";
 
 export function PackagesPage() {
-  const { packagesHeroTitle, packagesHeroSubtitle } = useContentStore();
-  
-  const packages = [
-    {
-      name: "The Foundation",
-      subtitle: "For new or rebranding businesses",
-      includes: ["Brand strategy", "Logo design", "Brand guidelines"],
-      result: "A strong, professional brand foundation.",
-    },
-    {
-      name: "The Growth",
-      subtitle: "For scaling brands",
-      includes: ["Content creation", "Social media management", "Marketing strategy"],
-      result: "Consistent visibility and client acquisition.",
-    },
-    {
-      name: "The Authority",
-      subtitle: "For brands ready to dominate",
-      includes: ["Full brand management", "Marketing execution", "Digital systems integration"],
-      result: "Market leadership and premium positioning.",
-    },
-    {
-      name: "The Healthcare Elevation",
-      subtitle: "For private hospitals and healthcare providers",
-      includes: ["Brand audit & repositioning", "Website redesign", "Booking systems & CRM", "Patient journey optimization"],
-      result: "Improved patient trust, efficiency, and overall experience.",
-    },
-    {
-      name: "The Authority Presence",
-      subtitle: "For doctors and founders",
-      includes: ["Personal brand strategy", "Image consultancy", "Content direction", "Profile optimization"],
-      result: "Authority, trust, and premium personal positioning.",
-    },
-  ];
+  const { packagesHeroTitle, packagesHeroSubtitle, packages } = useContentStore();
 
   return (
-    <div>
+    <div className="overflow-x-hidden">
       <DocumentHead
         title="Packages — S.Socials"
         description="Structured brand growth packages designed to meet your business at every stage, from foundation to market leadership."
       />
-      {/* Hero Section */}
-      <section className="max-w-[1440px] mx-auto px-16 md:px-24 lg:px-32 py-48 md:py-64">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-24 md:gap-32 lg:gap-40">
-          <div className="lg:col-span-5">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="mb-20 text-[32px] md:text-[48px] lg:text-[64px] leading-[1.2] tracking-[-0.02em]"
-            >
+
+      {/* Hero */}
+      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pt-8 md:pt-10 lg:pt-12 pb-10 md:pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-end">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="lg:col-span-5"
+          >
+            <div className="flex items-center gap-3 mb-5">
+              <motion.div
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.7, ease: "easeOut" }}
+                className="h-px w-10 bg-current opacity-25 origin-left"
+              />
+              <span className="text-[10px] tracking-[0.18em] opacity-35">INVESTMENT</span>
+            </div>
+            <h1 className="text-[24px] md:text-[38px] lg:text-[48px] leading-[1.1] tracking-[-0.02em]">
               {packagesHeroTitle}
-            </motion.h1>
-          </div>
-          <div className="lg:col-span-7">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-              className="text-[14px] md:text-[16px] lg:text-[18px] leading-relaxed opacity-60"
-            >
+            </h1>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.12, ease: "easeOut" }}
+            className="lg:col-span-7"
+          >
+            <p className="text-[14px] md:text-[15px] leading-relaxed opacity-55 max-w-[480px]">
               {packagesHeroSubtitle}
-            </motion.p>
-          </div>
+            </p>
+          </motion.div>
         </div>
       </section>
 
       {/* Packages Grid */}
-      <section className="max-w-[1440px] mx-auto px-16 md:px-24 lg:px-32 pb-48 md:pb-64">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24">
-          {packages.map((pkg, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-              className="p-16 md:p-24 lg:p-32 border border-border bg-card"
-            >
-              <h2 className="mb-8 text-[20px] md:text-[24px] lg:text-[28px] tracking-[-0.01em]">
-                {pkg.name}
-              </h2>
-              <p className="mb-20 md:mb-24 text-[13px] md:text-[14px] opacity-60">
-                {pkg.subtitle}
-              </p>
-              
-              <div className="mb-20 md:mb-24">
-                <h3 className="mb-12 text-[11px] md:text-[12px] tracking-[0.1em] opacity-40">
-                  INCLUDES
-                </h3>
-                <ul className="space-y-8">
-                  {pkg.includes.map((item, itemIndex) => (
-                    <li key={itemIndex} className="text-[13px] md:text-[14px] opacity-60 flex items-start">
-                      <span className="mr-8">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pb-14 md:pb-18 lg:pb-24">
+        {/* Top divider */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="h-px bg-current opacity-10 origin-left mb-8 md:mb-10"
+        />
 
-              <div>
-                <h3 className="mb-12 text-[11px] md:text-[12px] tracking-[0.1em] opacity-40">
-                  RESULT
-                </h3>
-                <p className="text-[13px] md:text-[14px] opacity-60">
-                  {pkg.result}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6">
+          {packages.map((pkg, index) => {
+            const isFeatured = pkg.featured;
+
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.55, delay: index * 0.07, ease: "easeOut" }}
+                className={`relative flex flex-col border overflow-hidden ${
+                  isFeatured
+                    ? "border-primary bg-primary text-primary-foreground lg:col-span-2"
+                    : "border-border bg-card"
+                }`}
+              >
+                {/* Tier bar — top accent */}
+                <div className={`h-[3px] w-full ${isFeatured ? "bg-primary-foreground/20" : "bg-border"}`}>
+                  <motion.div
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: index * 0.07 + 0.2, ease: "easeOut" }}
+                    className={`h-full origin-left ${
+                      isFeatured ? "bg-primary-foreground/60" : "bg-primary/40"
+                    }`}
+                    style={{ width: `${(pkg.tier / 3) * 100}%` }}
+                  />
+                </div>
+
+                <div className="p-4 md:p-6 lg:p-7 flex flex-col flex-1">
+                  {/* Package name + subtitle */}
+                  <div className="mb-6 pb-5 border-b border-current/10">
+                    {isFeatured && (
+                      <span className="text-[9px] tracking-[0.2em] opacity-50 mb-2 block">
+                        FLAGSHIP
+                      </span>
+                    )}
+                    <h2 className={`mb-1.5 text-[18px] md:text-[20px] tracking-[-0.01em] ${
+                      isFeatured ? "" : ""
+                    }`}>
+                      {pkg.name}
+                    </h2>
+                    <p className={`text-[12px] tracking-[0.03em] ${
+                      isFeatured ? "opacity-55" : "opacity-45"
+                    }`}>
+                      {pkg.subtitle}
+                    </p>
+                  </div>
+
+                  {/* Includes */}
+                  <div className="mb-6 flex-1">
+                    <p className={`text-[9px] tracking-[0.18em] mb-3 ${
+                      isFeatured ? "opacity-60" : "opacity-55"
+                    }`}>
+                      INCLUDES
+                    </p>
+                    <ul className="space-y-2">
+                      {pkg.includes.map((item, i) => (
+                        <motion.li
+                          key={i}
+                          initial={{ opacity: 0, x: -8 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.4, delay: index * 0.05 + i * 0.06 }}
+                          className={`flex items-center gap-3 text-[13px] md:text-[14px] ${
+                            isFeatured ? "opacity-75" : "opacity-60"
+                          }`}
+                        >
+                          <span className={`w-3 h-px flex-shrink-0 ${
+                            isFeatured ? "bg-primary-foreground/50" : "bg-current opacity-30"
+                          }`} />
+                          {item}
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Result */}
+                  <div className={`pt-5 border-t border-current/10`}>
+                    <p className={`text-[9px] tracking-[0.18em] mb-2 ${
+                      isFeatured ? "opacity-60" : "opacity-55"
+                    }`}>
+                      RESULT
+                    </p>
+                    <p className={`text-[14px] md:text-[15px] font-light leading-snug ${
+                      isFeatured ? "opacity-90" : "opacity-80"
+                    }`}>
+                      {pkg.result}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA */}
       <section className="bg-primary text-primary-foreground">
-        <div className="max-w-[1440px] mx-auto px-16 md:px-24 lg:px-32 py-56 md:py-64">
-          <div className="max-w-[700px] mx-auto text-center">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="mb-32 text-[32px] md:text-[40px] lg:text-[48px] leading-[1.2] tracking-[-0.01em]"
-            >
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-14 md:py-18 lg:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="max-w-[680px] mx-auto text-center"
+          >
+            <p className="text-[10px] tracking-[0.2em] opacity-40 mb-4">TAKE THE FIRST STEP</p>
+            <h2 className="mb-6 text-[24px] md:text-[32px] lg:text-[42px] leading-[1.15] tracking-[-0.02em]">
               Ready to get started?
-            </motion.h2>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-            >
-              <Button to="/contact" variant="secondary">Book a Consultation</Button>
-            </motion.div>
-          </div>
+            </h2>
+            <Button to="/contact" variant="secondary">Book a Consultation</Button>
+          </motion.div>
         </div>
       </section>
     </div>

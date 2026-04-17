@@ -1,33 +1,81 @@
 import { Link } from "react-router";
 import { Logo } from "./Logo";
 import { useContentStore } from "../store/contentStore";
+import footerBg from "../../assests/footer-bg.jpg";
 
 export function Footer() {
   const { footerLinks, footerText } = useContentStore();
 
+  const mainLinks = footerLinks.slice(0, 4);
+  const secondaryLinks = footerLinks.slice(4);
+
   return (
-    <footer className="bg-primary text-primary-foreground">
-      <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-32 md:py-40 lg:py-48">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-24 md:gap-32">
-          {/* Brand */}
-          <div className="sm:col-span-2 lg:col-span-1">
-            <div className="mb-12 md:mb-16">
-              <Logo className="text-primary-foreground" />
+    <footer
+      className="text-primary-foreground relative"
+      style={{
+        backgroundImage: `url(${footerBg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      {/* Dark overlay so content stays readable */}
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(180deg, rgba(3,35,77,0.88) 0%, rgba(1,21,40,0.95) 100%)" }} />
+
+      {/* All content sits above the overlay */}
+      <div className="relative">
+      {/* Top statement bar */}
+      <div className="border-b border-primary-foreground/10">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-8 md:py-10">
+          <p className="text-[10px] md:text-[11px] tracking-[0.2em] opacity-40 text-center">
+            HEALTH · BEAUTY · WELLNESS · PRIVATE HEALTHCARE
+          </p>
+        </div>
+      </div>
+
+      {/* Main footer body */}
+      <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-10 md:py-14">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8">
+
+          {/* Brand column */}
+          <div className="md:col-span-5 lg:col-span-4">
+            <div className="mb-5">
+              <Logo variant="white" />
             </div>
-            <p className="text-[12px] md:text-[13px] lg:text-[14px] leading-relaxed opacity-80 max-w-[300px]">
-              Building high-converting, premium brand experiences for health, beauty, wellness, and private healthcare brands.
+            <p className="text-[12px] md:text-[13px] leading-[1.8] opacity-60 max-w-full md:max-w-[280px]">
+              Building premium brand experiences that elevate perception, attract quality clients, and drive sustainable growth.
             </p>
+            <div className="mt-6">
+              <Link
+                to="/contact"
+                className="inline-block text-[11px] tracking-[0.12em] border border-primary-foreground/30 px-5 py-3 hover:bg-primary-foreground hover:text-primary transition-all duration-300"
+              >
+                BOOK A CONSULTATION
+              </Link>
+            </div>
           </div>
 
-          {/* Footer Links */}
-          <div className="sm:col-span-1">
-            <h4 className="mb-12 md:mb-14 text-[12px] md:text-[13px] tracking-[0.1em]">LINKS</h4>
-            <nav className="flex flex-col gap-8 md:gap-10">
-              {footerLinks.map((link) => (
+          {/* Spacer on desktop */}
+          <div className="hidden lg:block lg:col-span-2" />
+
+          {/* Navigation */}
+          <div className="md:col-span-3 lg:col-span-3">
+            <h4 className="mb-5 text-[10px] tracking-[0.2em] opacity-40">NAVIGATE</h4>
+            <nav className="flex flex-col gap-3">
+              {mainLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className="text-[12px] md:text-[13px] opacity-80 hover:opacity-100 transition-opacity duration-200"
+                  className="text-[12px] md:text-[13px] tracking-[0.03em] opacity-70 hover:opacity-100 transition-opacity duration-200"
+                >
+                  {link.name}
+                </Link>
+              ))}
+              {secondaryLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className="text-[12px] md:text-[13px] tracking-[0.03em] opacity-70 hover:opacity-100 transition-opacity duration-200"
                 >
                   {link.name}
                 </Link>
@@ -36,23 +84,31 @@ export function Footer() {
           </div>
 
           {/* Contact */}
-          <div className="sm:col-span-1">
-            <h4 className="mb-12 md:mb-14 text-[12px] md:text-[13px] tracking-[0.1em]">CONTACT</h4>
-            <div className="flex flex-col gap-8 md:gap-10 text-[12px] md:text-[13px] opacity-80">
-              <p>Worldwide</p>
-              <Link to="/contact" className="hover:opacity-100 transition-opacity duration-200">
-                Book a Consultation
+          <div className="md:col-span-4 lg:col-span-3">
+            <h4 className="mb-5 text-[10px] tracking-[0.2em] opacity-40">REACH US</h4>
+            <div className="flex flex-col gap-3 text-[12px] md:text-[13px] opacity-70">
+              <p className="leading-relaxed">Available worldwide.<br />Remote &amp; in-person.</p>
+              <Link
+                to="/contact"
+                className="hover:opacity-100 transition-opacity duration-200 underline underline-offset-4 decoration-primary-foreground/30"
+              >
+                Start a project
               </Link>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="mt-32 md:mt-40 lg:mt-48 pt-20 md:pt-24 border-t border-primary-foreground/20">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-8 md:gap-12 text-[10px] md:text-[11px] lg:text-[12px] opacity-60">
+      {/* Bottom bar */}
+      <div className="border-t border-primary-foreground/10">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-5">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-[10px] md:text-[11px] opacity-40 tracking-[0.05em]">
             <p>{footerText}</p>
+            <p className="hidden sm:block">S.SOCIALS — PREMIUM BRAND GROWTH</p>
           </div>
         </div>
       </div>
+      </div>{/* end relative wrapper */}
     </footer>
   );
 }

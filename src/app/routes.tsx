@@ -10,6 +10,7 @@ import { ProcessPage } from "./pages/ProcessPage";
 import { ContactPage } from "./pages/ContactPage";
 import { AdminPage } from "./pages/AdminPage";
 import { LoginPage } from "./pages/LoginPage";
+import { ReviewsPage } from "./pages/ReviewsPage";
 import { NotFound } from "./components/NotFound";
 
 export const router = createBrowserRouter([
@@ -25,9 +26,10 @@ export const router = createBrowserRouter([
       { path: "personal-branding", Component: PersonalBrandingPage },
       { path: "process", Component: ProcessPage },
       { path: "contact", Component: ContactPage },
-      { path: "login", Component: LoginPage },
-      { path: "admin", Component: AdminPage },
+      { path: "reviews", Component: ReviewsPage },
       { path: "*", Component: NotFound },
     ],
   },
+  { path: "/login", Component: LoginPage },
+  { path: "/admin", Component: AdminPage },
 ]);

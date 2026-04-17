@@ -11,7 +11,7 @@ interface ButtonProps {
 }
 
 export function Button({ to, href, children, variant = "primary", className = "", onClick, type = "button" }: ButtonProps) {
-  const baseStyles = "inline-block px-20 md:px-28 lg:px-32 py-12 md:py-14 lg:py-16 text-[13px] md:text-[14px] tracking-[0.05em] transition-opacity duration-200 hover:opacity-90 text-center";
+  const baseStyles = "inline-block px-6 md:px-8 py-3 md:py-4 text-[13px] md:text-[14px] tracking-[0.05em] transition-opacity duration-200 hover:opacity-90 text-center whitespace-nowrap";
   const variantStyles = {
     primary: "bg-primary text-primary-foreground",
     secondary: "bg-secondary text-secondary-foreground",

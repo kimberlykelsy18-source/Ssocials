@@ -5,7 +5,7 @@ import { useContentStore } from "../store/contentStore";
 
 export function ServicesPage() {
   const { servicesHeroTitle, servicesHeroSubtitle } = useContentStore();
-  
+
   const services = [
     {
       title: "Brand & Identity",
@@ -49,96 +49,157 @@ export function ServicesPage() {
     },
   ];
 
+  const listVariants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.07 } },
+  } as const;
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -12 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.45, ease: "easeOut" as const } },
+  } as const;
+
   return (
-    <div>
+    <div className="overflow-x-hidden">
       <DocumentHead
         title="Services — S.Socials"
         description="Comprehensive branding, marketing, and digital solutions for health, beauty, wellness, and private healthcare brands."
       />
-      {/* Hero Section */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-32 md:py-48 lg:py-64">
-        <div className="max-w-[900px] mx-auto text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="mb-16 md:mb-24 text-[28px] md:text-[48px] lg:text-[64px] leading-[1.2] tracking-[-0.02em]"
-          >
+
+      {/* Hero */}
+      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pt-8 md:pt-10 lg:pt-12 pb-10 md:pb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="max-w-[720px]"
+        >
+          {/* Eyebrow line */}
+          <div className="flex items-center gap-3 mb-5">
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              className="h-px w-10 bg-current opacity-25 origin-left"
+            />
+            <span className="text-[10px] tracking-[0.18em] opacity-35">WHAT WE DO</span>
+          </div>
+
+          <h1 className="mb-4 text-[24px] md:text-[38px] lg:text-[48px] leading-[1.1] tracking-[-0.02em]">
             {servicesHeroTitle}
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-            className="text-[14px] md:text-[16px] lg:text-[18px] leading-relaxed opacity-60"
-          >
+          </h1>
+          <p className="text-[14px] md:text-[15px] leading-relaxed opacity-55 max-w-[520px]">
             {servicesHeroSubtitle}
-          </motion.p>
-        </div>
+          </p>
+        </motion.div>
       </section>
 
-      {/* Services Grid */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pb-32 md:pb-48 lg:pb-64">
-        <div className="space-y-32 md:space-y-40">
-          {services.map((service, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className={`grid grid-cols-1 lg:grid-cols-12 gap-16 md:gap-24 lg:gap-40 pb-32 md:pb-40 ${
-                index !== services.length - 1 ? "border-b border-border" : ""
-              }`}
+      {/* Services — editorial numbered list */}
+      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pb-14 md:pb-18 lg:pb-24">
+        {/* Top divider */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+          className="h-px bg-current opacity-10 origin-left mb-0"
+        />
+
+        {services.map((service, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.55, ease: "easeOut" }}
+            className="relative grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 py-8 md:py-10 border-b border-border overflow-hidden"
+          >
+            {/* Step number — small, bottom-right, purely decorative */}
+            <motion.span
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+              aria-hidden="true"
+              className="absolute right-4 bottom-3 text-[11px] tracking-[0.2em] font-light leading-none select-none pointer-events-none opacity-[0.25]"
             >
-              <div className="lg:col-span-4">
-                <h2 className="mb-12 md:mb-16 text-[20px] md:text-[24px] lg:text-[28px] tracking-[-0.01em]">
+              {String(index + 1).padStart(2, "0")}
+            </motion.span>
+
+            {/* Left: number badge + title + items */}
+            <div className="lg:col-span-5 relative z-10">
+              <div className="flex items-baseline gap-3 mb-3">
+                <span className="text-[11px] tracking-[0.15em] opacity-50 font-light">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <h2 className="text-[17px] md:text-[19px] lg:text-[21px] tracking-[-0.01em]">
                   {service.title}
                 </h2>
-                <ul className="space-y-6 md:space-y-8">
-                  {service.items.map((item, itemIndex) => (
-                    <li key={itemIndex} className="text-[13px] md:text-[14px] lg:text-[16px] opacity-60 flex items-start">
-                      <span className="mr-6 md:mr-8">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
-              <div className="lg:col-span-8 lg:pt-8">
-                <h3 className="mb-8 md:mb-12 text-[11px] md:text-[12px] tracking-[0.1em] opacity-40">
-                  OUTCOME
-                </h3>
-                <p className="text-[14px] md:text-[16px] lg:text-[18px] leading-relaxed opacity-60">
-                  {service.outcome}
-                </p>
-              </div>
+
+              {/* Animated underline */}
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
+                className="h-px bg-current opacity-15 origin-left mb-4 md:mb-5"
+              />
+
+              <motion.ul
+                variants={listVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-40px" }}
+                className="space-y-2"
+              >
+                {service.items.map((item, i) => (
+                  <motion.li
+                    key={i}
+                    variants={itemVariants}
+                    className="flex items-center gap-3 text-[13px] md:text-[14px] opacity-55"
+                  >
+                    <span className="w-3 h-px bg-current opacity-50 flex-shrink-0" />
+                    {item}
+                  </motion.li>
+                ))}
+              </motion.ul>
+            </div>
+
+            {/* Right: outcome — large, confident */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+              className="lg:col-span-7 flex flex-col justify-center relative z-10"
+            >
+              <span className="text-[10px] tracking-[0.18em] opacity-55 mb-3 block">
+                OUTCOME
+              </span>
+              <p className="text-[18px] md:text-[22px] lg:text-[26px] font-light leading-[1.25] opacity-85 tracking-[-0.01em]">
+                {service.outcome}
+              </p>
             </motion.div>
-          ))}
-        </div>
+          </motion.div>
+        ))}
       </section>
 
-      {/* CTA Section */}
+      {/* CTA */}
       <section className="bg-primary text-primary-foreground">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-40 md:py-56 lg:py-64">
-          <div className="max-w-[700px] mx-auto text-center">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="mb-24 md:mb-32 text-[24px] md:text-[32px] lg:text-[48px] leading-[1.2] tracking-[-0.01em]"
-            >
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-14 md:py-18 lg:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="max-w-[680px] mx-auto text-center"
+          >
+            <p className="text-[10px] tracking-[0.2em] opacity-40 mb-4">READY TO BEGIN</p>
+            <h2 className="mb-6 text-[24px] md:text-[32px] lg:text-[42px] leading-[1.15] tracking-[-0.02em]">
               Let's build something exceptional
-            </motion.h2>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-            >
-              <Button to="/contact" variant="secondary">Book a Consultation</Button>
-            </motion.div>
-          </div>
+            </h2>
+            <Button to="/contact" variant="secondary">Book a Consultation</Button>
+          </motion.div>
         </div>
       </section>
     </div>
