@@ -28,7 +28,7 @@ export function HomePage() {
       <DocumentHead />
       
       {/* Hero Section - fills viewport so buttons are always visible */}
-      <section className="w-full px-4 md:px-8 lg:px-16 min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)] flex items-center py-6 md:py-8">
+      <section className="w-full px-4 md:px-8 lg:px-16 min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)] flex items-start pt-10 md:pt-14 lg:pt-16 pb-10 md:pb-14">
         <div className="w-full max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -45,7 +45,7 @@ export function HomePage() {
               </span>
 
               <div className="pt-4 md:pt-5">
-                <h1 className="text-[22px] md:text-[28px] lg:text-[34px] xl:text-[38px] leading-[1.15] tracking-[-0.02em] space-y-0">
+                <h1 className="text-[22px] md:text-[28px] lg:text-[34px] leading-[1.15] tracking-[-0.02em] space-y-0">
 
                   {/* Setup — lowest emphasis, pure context */}
                   <motion.span
