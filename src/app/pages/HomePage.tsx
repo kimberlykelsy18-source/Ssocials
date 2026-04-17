@@ -27,29 +27,29 @@ export function HomePage() {
     <div className="overflow-x-hidden">
       <DocumentHead />
       
-      {/* Hero Section - fills viewport so buttons are always visible */}
-      <section className="w-full px-4 md:px-8 lg:px-16 min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)] flex items-start pt-10 md:pt-14 lg:pt-16 pb-10 md:pb-14">
-        <div className="w-full max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
+      {/* Hero Section */}
+      <section className="w-full px-4 md:px-8 lg:px-16 pt-10 md:pt-14 lg:pt-16 pb-10 md:pb-14 lg:pb-16">
+        <div className="w-full max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <div className="relative mb-4 md:mb-6">
+            <div className="relative mb-3 md:mb-5">
               {/* Decorative oversized quote mark */}
               <span
                 aria-hidden="true"
-                className="absolute -top-2 md:-top-4 -left-1 md:-left-2 text-[40px] md:text-[64px] lg:text-[88px] leading-none text-secondary select-none pointer-events-none font-light"
+                className="absolute -top-2 md:-top-4 -left-1 md:-left-2 text-[40px] md:text-[64px] lg:text-[80px] leading-none text-secondary select-none pointer-events-none font-light"
               >
                 &ldquo;
               </span>
 
               <div className="pt-4 md:pt-5">
-                <h1 className="text-[22px] md:text-[28px] lg:text-[34px] leading-[1.15] tracking-[-0.02em] space-y-0">
+                <h1 className="text-[20px] md:text-[26px] lg:text-[30px] leading-[1.2] tracking-[-0.02em] space-y-0">
 
                   {/* Setup — lowest emphasis, pure context */}
                   <motion.span
-                    className="block font-light opacity-35 leading-[1.15]"
+                    className="block font-light opacity-35 leading-[1.2]"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 0.35, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
@@ -59,7 +59,7 @@ export function HomePage() {
 
                   {/* The who — slightly elevated so the niche registers */}
                   <motion.span
-                    className="block font-normal opacity-60 leading-[1.15]"
+                    className="block font-normal opacity-60 leading-[1.2]"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 0.6, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.22, ease: "easeOut" }}
@@ -69,7 +69,7 @@ export function HomePage() {
 
                   {/* Continuation back to low — keeps flow */}
                   <motion.span
-                    className="block font-light opacity-35 leading-[1.15]"
+                    className="block font-light opacity-35 leading-[1.2]"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 0.35, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.32, ease: "easeOut" }}
@@ -79,7 +79,7 @@ export function HomePage() {
 
                   {/* Tension — italic signals the contrast, mid-weight */}
                   <motion.span
-                    className="block font-light italic opacity-70 leading-[1.15]"
+                    className="block font-light italic opacity-70 leading-[1.2]"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 0.7, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.44, ease: "easeOut" }}
@@ -89,7 +89,7 @@ export function HomePage() {
 
                   {/* Payoff — full weight, full opacity, the entire point */}
                   <motion.span
-                    className="block font-semibold leading-[1.15]"
+                    className="block font-semibold leading-[1.2]"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.58, ease: "easeOut" }}
@@ -100,7 +100,7 @@ export function HomePage() {
                 </h1>
               </div>
             </div>
-            <p className="mb-4 md:mb-5 text-[14px] md:text-[15px] lg:text-[16px] leading-relaxed opacity-60 max-w-[600px]">
+            <p className="mb-4 md:mb-5 text-[13px] md:text-[14px] lg:text-[15px] leading-relaxed opacity-60 max-w-[560px]">
               {store.homeHeroSubtitle}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
@@ -108,7 +108,7 @@ export function HomePage() {
               <Button to="/portfolio" variant="secondary">View Our Work</Button>
             </div>
           </motion.div>
-          
+
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
