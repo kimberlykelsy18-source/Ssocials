@@ -425,6 +425,25 @@ export const useContentStore = create<ContentStore>()(
     }),
     {
       name: "ssocials-content-storage",
+      version: 2,
+      // Migrate old persisted state — v1 → v2 injects Reviews into navItems
+      migrate: (persistedState: unknown, version: number) => {
+        const state = persistedState as Record<string, unknown>;
+        if (version < 2) {
+          const navItems = (state.navItems as Array<{ name: string; path: string }>) ?? [];
+          const hasReviews = navItems.some((item) => item.path === "/reviews");
+          if (!hasReviews) {
+            const contactIdx = navItems.findIndex((item) => item.path === "/contact");
+            if (contactIdx !== -1) {
+              navItems.splice(contactIdx, 0, { name: "Reviews", path: "/reviews" });
+            } else {
+              navItems.push({ name: "Reviews", path: "/reviews" });
+            }
+            state.navItems = [...navItems];
+          }
+        }
+        return state;
+      },
       // Don't persist auth state to localStorage — always revalidate with Supabase
       partialize: (state) => {
         const { isAuthenticated, isSyncing, loginWithEmail, logout, loadFromSupabase, saveToSupabase, ...rest } = state;
