@@ -1,74 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useContentStore } from "../store/contentStore";
 import { DocumentHead } from "../components/DocumentHead";
-import {
-  Save, Upload, LogOut, RefreshCw, ChevronDown, ChevronUp,
-  Trash2, Check, X, Star, ImageIcon, Video, Copy, Eye,
-} from "lucide-react";
+import { CONTAINER, INPUT_ADMIN as INPUT_CLS, TEXTAREA_ADMIN as TEXTAREA_CLS, LABEL_ADMIN, SECTION_HEADING, ADMIN_PANEL } from "../lib/styles";
+import { Save, Upload, LogOut, RefreshCw, Trash2, Eye } from "lucide-react";
 import { useNavigate } from "react-router";
-import {
-  getContactSubmissions,
-  updateSubmissionStatus,
-  updateSubmissionNotes,
-  getAllReviews,
-  updateReviewStatus,
-  toggleReviewFeatured,
-  deleteReview,
-  getMediaItems,
-  uploadMediaItem,
-  deleteMediaItem,
-  type ContactSubmission,
-  type SubmissionStatus,
-  type Review,
-  type ReviewStatus,
-  type MediaItem,
-} from "@backend/db";
-
-// ─── Constants ────────────────────────────────────────────────────────────────
-
-const STATUS_LABELS: Record<SubmissionStatus, string> = {
-  new: "New",
-  read: "Read",
-  replied: "Replied",
-};
-
-const STATUS_COLORS: Record<SubmissionStatus, string> = {
-  new: "bg-blue-500/15 text-blue-600 border-blue-200",
-  read: "bg-secondary text-primary/60 border-border",
-  replied: "bg-green-500/15 text-green-700 border-green-200",
-};
-
-const REVIEW_STATUS_LABELS: Record<ReviewStatus, string> = {
-  pending: "Pending",
-  approved: "Approved",
-  rejected: "Rejected",
-};
-
-const REVIEW_STATUS_COLORS: Record<ReviewStatus, string> = {
-  pending: "bg-yellow-500/15 text-yellow-700 border-yellow-200",
-  approved: "bg-green-500/15 text-green-700 border-green-200",
-  rejected: "bg-red-500/15 text-red-600 border-red-200",
-};
-
-// ─── Shared field styles ──────────────────────────────────────────────────────
-
-const INPUT_CLS = "w-full px-3 py-2 border border-border bg-input-background text-[14px] focus:outline-none focus:border-primary";
-const TEXTAREA_CLS = "w-full px-3 py-2.5 border border-border bg-input-background text-[14px] focus:outline-none focus:border-primary resize-none";
-
-// ─── Star display ─────────────────────────────────────────────────────────────
-
-function StarRow({ rating }: { rating: number }) {
-  return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((s) => (
-        <Star
-          key={s}
-          className={`w-3 h-3 ${s <= rating ? "fill-current" : "opacity-15 fill-current"}`}
-        />
-      ))}
-    </div>
-  );
-}
+import { SubmissionsTab } from "./admin/SubmissionsTab";
+import { ReviewsTab } from "./admin/ReviewsTab";
+import { MediaTab } from "./admin/MediaTab";
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -80,128 +18,14 @@ export function AdminPage() {
   const [saveError, setSaveError] = useState("");
   const logoFileRef = useRef<HTMLInputElement>(null);
 
-  // ── Submissions state ──────────────────────────────────────────────────────
-  const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
-  const [submissionsLoading, setSubmissionsLoading] = useState(false);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [noteDrafts, setNoteDrafts] = useState<Record<string, string>>({});
-
-  // ── Reviews state ──────────────────────────────────────────────────────────
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [reviewsLoading, setReviewsLoading] = useState(false);
-  const [reviewFilter, setReviewFilter] = useState<ReviewStatus | "all">("all");
-
-  // ── Media state ────────────────────────────────────────────────────────────
-  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
-  const [mediaLoading, setMediaLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [uploadError, setUploadError] = useState("");
-  const [mediaName, setMediaName] = useState("");
-  const [mediaPurpose, setMediaPurpose] = useState("general");
-  const mediaFileRef = useRef<HTMLInputElement>(null);
-  const [mediaFile, setMediaFile] = useState<File | null>(null);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  // Badge counts bubbled up from child tabs on load / status changes
+  const [newCount, setNewCount] = useState(0);
+  const [pendingReviewCount, setPendingReviewCount] = useState(0);
 
   useEffect(() => {
     if (!store.isAuthenticated) navigate("/login");
   }, [store.isAuthenticated, navigate]);
 
-  useEffect(() => {
-    if (activeTab === "submissions") fetchSubmissions();
-    if (activeTab === "reviews") fetchReviews();
-    if (activeTab === "media") fetchMedia();
-  }, [activeTab]);
-
-  // ── Submissions ────────────────────────────────────────────────────────────
-  const fetchSubmissions = async () => {
-    setSubmissionsLoading(true);
-    const data = await getContactSubmissions();
-    setSubmissions(data);
-    const drafts: Record<string, string> = {};
-    data.forEach((s) => { drafts[s.id] = s.notes ?? ""; });
-    setNoteDrafts(drafts);
-    setSubmissionsLoading(false);
-  };
-
-  const handleStatusChange = async (id: string, status: SubmissionStatus) => {
-    await updateSubmissionStatus(id, status);
-    setSubmissions((prev) => prev.map((s) => s.id === id ? { ...s, status } : s));
-  };
-
-  const handleNoteSave = async (id: string) => {
-    await updateSubmissionNotes(id, noteDrafts[id] ?? "");
-    setSubmissions((prev) => prev.map((s) => s.id === id ? { ...s, notes: noteDrafts[id] ?? "" } : s));
-  };
-
-  // ── Reviews ────────────────────────────────────────────────────────────────
-  const fetchReviews = async () => {
-    setReviewsLoading(true);
-    const data = await getAllReviews();
-    setReviews(data);
-    setReviewsLoading(false);
-  };
-
-  const handleReviewStatus = async (id: string, status: ReviewStatus) => {
-    await updateReviewStatus(id, status);
-    setReviews((prev) => prev.map((r) => r.id === id ? { ...r, status } : r));
-  };
-
-  const handleReviewFeatured = async (id: string, featured: boolean) => {
-    await toggleReviewFeatured(id, featured);
-    setReviews((prev) => prev.map((r) => r.id === id ? { ...r, featured } : r));
-  };
-
-  const handleReviewDelete = async (id: string) => {
-    if (!confirm("Delete this review? This cannot be undone.")) return;
-    await deleteReview(id);
-    setReviews((prev) => prev.filter((r) => r.id !== id));
-  };
-
-  // ── Media ──────────────────────────────────────────────────────────────────
-  const fetchMedia = async () => {
-    setMediaLoading(true);
-    const data = await getMediaItems();
-    setMediaItems(data);
-    setMediaLoading(false);
-  };
-
-  const handleMediaFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] ?? null;
-    setMediaFile(file);
-    if (file && !mediaName) setMediaName(file.name.replace(/\.[^.]+$/, ""));
-  };
-
-  const handleUpload = async () => {
-    if (!mediaFile) { setUploadError("Please select a file."); return; }
-    if (!mediaName.trim()) { setUploadError("Please enter a name."); return; }
-    setUploading(true);
-    setUploadError("");
-    const result = await uploadMediaItem(mediaFile, mediaName.trim(), mediaPurpose);
-    if (result.ok && result.item) {
-      setMediaItems((prev) => [result.item!, ...prev]);
-      setMediaFile(null);
-      setMediaName("");
-      setMediaPurpose("general");
-      if (mediaFileRef.current) mediaFileRef.current.value = "";
-    } else {
-      setUploadError(result.error ?? "Upload failed.");
-    }
-    setUploading(false);
-  };
-
-  const handleMediaDelete = async (id: string, storagePath: string) => {
-    if (!confirm("Delete this media item? It will be removed from storage.")) return;
-    await deleteMediaItem(id, storagePath);
-    setMediaItems((prev) => prev.filter((m) => m.id !== id));
-  };
-
-  const handleCopyUrl = (id: string, url: string) => {
-    navigator.clipboard.writeText(url);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
-  };
-
-  // ── Save / Logout ──────────────────────────────────────────────────────────
   const handleSave = async () => {
     setSaveState("saving");
     setSaveError("");
@@ -230,9 +54,6 @@ export function AdminPage() {
     }
   };
 
-  const newCount = submissions.filter((s) => s.status === "new").length;
-  const pendingReviewCount = reviews.filter((r) => r.status === "pending").length;
-
   const tabs = [
     { id: "logo", label: "Logo" },
     { id: "navbar", label: "Navigation" },
@@ -243,6 +64,7 @@ export function AdminPage() {
     { id: "services", label: "Services" },
     { id: "packages", label: "Packages" },
     { id: "portfolio", label: "Portfolio" },
+    { id: "dev-projects", label: "Dev Projects" },
     { id: "process", label: "Process" },
     { id: "personal-branding", label: "Personal Branding" },
     { id: "contact", label: "Contact" },
@@ -252,17 +74,13 @@ export function AdminPage() {
     { id: "submissions", label: newCount > 0 ? `Submissions (${newCount})` : "Submissions" },
   ];
 
-  const filteredReviews = reviewFilter === "all"
-    ? reviews
-    : reviews.filter((r) => r.status === reviewFilter);
-
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <DocumentHead title="Admin Panel — S.Socials" description="Edit all website content" />
 
       {/* ── Admin Header ── */}
       <div className="border-b border-destructive bg-destructive/10 sticky top-0 z-50">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-4 md:py-5">
+        <div className={`${CONTAINER} py-4 md:py-5`}>
           <div className="flex items-center justify-between gap-4">
             <div>
               <h1 className="text-[18px] md:text-[20px] lg:text-[24px] tracking-[-0.01em] text-destructive">
@@ -307,7 +125,7 @@ export function AdminPage() {
         </div>
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-6 md:py-8">
+      <div className={`${CONTAINER} py-6 md:py-8`}>
         {/* Tabs */}
         <div className="flex gap-1 mb-8 border-b border-border pb-0 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
           {tabs.map((tab) => (
@@ -327,8 +145,8 @@ export function AdminPage() {
 
         {/* ── Logo ── */}
         {activeTab === "logo" && (
-          <div className="max-w-[700px] space-y-5">
-            <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">Logo Image Upload</h2>
+          <div className={ADMIN_PANEL}>
+            <h2 className={SECTION_HEADING}>Logo Image Upload</h2>
             <div>
               <input
                 ref={logoFileRef}
@@ -360,8 +178,8 @@ export function AdminPage() {
 
         {/* ── Navigation ── */}
         {activeTab === "navbar" && (
-          <div className="max-w-[700px] space-y-5">
-            <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">Navigation Menu</h2>
+          <div className={ADMIN_PANEL}>
+            <h2 className={SECTION_HEADING}>Navigation Menu</h2>
             {store.navItems.map((item, index) => (
               <div key={index} className="p-4 border border-border bg-card grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -385,8 +203,8 @@ export function AdminPage() {
 
         {/* ── Home ── */}
         {activeTab === "home" && (
-          <div className="max-w-[700px] space-y-5">
-            <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">Home Page Content</h2>
+          <div className={ADMIN_PANEL}>
+            <h2 className={SECTION_HEADING}>Home Page Content</h2>
             {[
               { label: "Hero Title", field: "homeHeroTitle", rows: 3 },
               { label: "Hero Subtitle", field: "homeHeroSubtitle", rows: 2 },
@@ -408,8 +226,8 @@ export function AdminPage() {
 
         {/* ── Home Images ── */}
         {activeTab === "home-images" && (
-          <div className="max-w-[700px] space-y-5">
-            <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">Home Page Images</h2>
+          <div className={ADMIN_PANEL}>
+            <h2 className={SECTION_HEADING}>Home Page Images</h2>
             {[
               { label: "Hero Image", field: "hero" },
               { label: "About Section Image", field: "aboutSection" },
@@ -434,8 +252,8 @@ export function AdminPage() {
 
         {/* ── About ── */}
         {activeTab === "about" && (
-          <div className="max-w-[700px] space-y-5">
-            <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">About Page Content</h2>
+          <div className={ADMIN_PANEL}>
+            <h2 className={SECTION_HEADING}>About Page Content</h2>
             {[
               { label: "Hero Title", field: "aboutHeroTitle", rows: 1 },
               { label: "Paragraph 1", field: "aboutText1", rows: 2 },
@@ -457,8 +275,8 @@ export function AdminPage() {
 
         {/* ── About Images ── */}
         {activeTab === "about-images" && (
-          <div className="max-w-[700px] space-y-5">
-            <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">About Page Images</h2>
+          <div className={ADMIN_PANEL}>
+            <h2 className={SECTION_HEADING}>About Page Images</h2>
             <div>
               <label className="block mb-1.5 text-[12px] tracking-[0.05em]">Hero Image</label>
               <input type="url" value={store.aboutImages.hero}
@@ -476,8 +294,8 @@ export function AdminPage() {
 
         {/* ── Services ── */}
         {activeTab === "services" && (
-          <div className="max-w-[700px] space-y-5">
-            <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">Services Page Hero</h2>
+          <div className={ADMIN_PANEL}>
+            <h2 className={SECTION_HEADING}>Services Page Hero</h2>
             {[
               { label: "Hero Title", field: "servicesHeroTitle", rows: 1 },
               { label: "Hero Subtitle", field: "servicesHeroSubtitle", rows: 2 },
@@ -495,8 +313,8 @@ export function AdminPage() {
 
         {/* ── Packages ── */}
         {activeTab === "packages" && (
-          <div className="max-w-[700px] space-y-5">
-            <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">Packages Page Hero</h2>
+          <div className={ADMIN_PANEL}>
+            <h2 className={SECTION_HEADING}>Packages Page Hero</h2>
             {[
               { label: "Hero Title", field: "packagesHeroTitle", rows: 1 },
               { label: "Hero Subtitle", field: "packagesHeroSubtitle", rows: 2 },
@@ -514,8 +332,8 @@ export function AdminPage() {
 
         {/* ── Portfolio ── */}
         {activeTab === "portfolio" && (
-          <div className="max-w-[700px] space-y-5">
-            <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">Portfolio Page Hero</h2>
+          <div className={ADMIN_PANEL}>
+            <h2 className={SECTION_HEADING}>Portfolio Page Hero</h2>
             {[
               { label: "Hero Title", field: "portfolioHeroTitle", rows: 1 },
               { label: "Hero Subtitle", field: "portfolioHeroSubtitle", rows: 2 },
@@ -531,10 +349,137 @@ export function AdminPage() {
           </div>
         )}
 
+        {/* ── Dev Projects ── */}
+        {activeTab === "dev-projects" && (
+          <div className="max-w-[900px] space-y-6">
+            <div className="flex items-start justify-between flex-wrap gap-4">
+              <div>
+                <h2 className={SECTION_HEADING}>Dev Projects</h2>
+                <p className="mt-1 text-[12px] opacity-50">These appear as the "Selected Work" showcase in the Software Development &amp; IT service row. Enter the live site URL — the screenshot is generated automatically.</p>
+              </div>
+              <button
+                onClick={() => store.updateDevProjects([...store.devProjects, { name: "", tech: "", url: "" }])}
+                className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground text-[12px] tracking-[0.05em] hover:opacity-90 transition-opacity"
+              >
+                + Add Project
+              </button>
+            </div>
+
+            {store.devProjects.length === 0 && (
+              <div className="py-10 border border-dashed border-border text-center">
+                <p className="text-[13px] opacity-40">No projects yet. Click "Add Project" to start.</p>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              {store.devProjects.map((project, index) => (
+                <div key={index} className="border border-border p-5 space-y-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-[11px] tracking-[0.15em] opacity-40">PROJECT {String(index + 1).padStart(2, "0")}</span>
+                    <button
+                      onClick={() => store.updateDevProjects(store.devProjects.filter((_, i) => i !== index))}
+                      className="flex items-center gap-1.5 text-[11px] text-destructive hover:opacity-70 transition-opacity"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Remove
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className={LABEL_ADMIN}>Project Name</label>
+                      <input
+                        type="text"
+                        value={project.name}
+                        placeholder="e.g. S.Socials Agency Site"
+                        onChange={(e) => {
+                          const updated = [...store.devProjects];
+                          updated[index] = { ...updated[index], name: e.target.value };
+                          store.updateDevProjects(updated);
+                        }}
+                        className={INPUT_CLS}
+                      />
+                    </div>
+                    <div>
+                      <label className={LABEL_ADMIN}>Tech Stack</label>
+                      <input
+                        type="text"
+                        value={project.tech}
+                        placeholder="e.g. React · TypeScript · Supabase"
+                        onChange={(e) => {
+                          const updated = [...store.devProjects];
+                          updated[index] = { ...updated[index], tech: e.target.value };
+                          store.updateDevProjects(updated);
+                        }}
+                        className={INPUT_CLS}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={LABEL_ADMIN}>Live Site URL</label>
+                    <input
+                      type="url"
+                      value={project.url}
+                      placeholder="https://yoursite.com"
+                      onChange={(e) => {
+                        const updated = [...store.devProjects];
+                        updated[index] = { ...updated[index], url: e.target.value };
+                        store.updateDevProjects(updated);
+                      }}
+                      className={INPUT_CLS}
+                    />
+                    <p className="mt-1.5 text-[11px] opacity-40">Auto-screenshot is generated from this URL. First load may take a few seconds.</p>
+                  </div>
+
+                  <div>
+                    <label className={LABEL_ADMIN}>Custom Image URL <span className="normal-case opacity-60">(optional — overrides auto-screenshot)</span></label>
+                    <input
+                      type="url"
+                      value={project.image ?? ""}
+                      placeholder="Paste a URL from the Media Library, or leave blank to use auto-screenshot"
+                      onChange={(e) => {
+                        const updated = [...store.devProjects];
+                        updated[index] = { ...updated[index], image: e.target.value || undefined };
+                        store.updateDevProjects(updated);
+                      }}
+                      className={INPUT_CLS}
+                    />
+                    <p className="mt-1.5 text-[11px] opacity-40">Upload your screenshot in the Media tab, copy its URL, and paste it here for a crisp custom image.</p>
+                  </div>
+
+                  {project.url && project.url.startsWith("http") && (
+                    <div className="border border-border overflow-hidden">
+                      <p className="px-3 py-2 text-[10px] tracking-[0.1em] opacity-40 border-b border-border uppercase">
+                        Preview {project.image ? "— custom image" : "— auto-screenshot"}
+                      </p>
+                      <img
+                        src={project.image || `https://s.wordpress.com/mshots/v1/${encodeURIComponent(project.url)}?w=1280&h=800`}
+                        alt={project.name || "Site preview"}
+                        className="w-full h-[180px] object-cover object-top bg-secondary/20"
+                      />
+                      <div className="px-3 py-2 flex items-center justify-between border-t border-border">
+                        <span className="text-[11px] opacity-40 truncate">{project.url}</span>
+                        <a
+                          href={project.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 text-[11px] tracking-[0.05em] opacity-50 hover:opacity-100 transition-opacity flex-shrink-0 ml-3"
+                        >
+                          <Eye className="w-3.5 h-3.5" /> Open
+                        </a>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* ── Process ── */}
         {activeTab === "process" && (
-          <div className="max-w-[700px] space-y-5">
-            <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">Process Page Hero</h2>
+          <div className={ADMIN_PANEL}>
+            <h2 className={SECTION_HEADING}>Process Page Hero</h2>
             {[
               { label: "Hero Title", field: "processHeroTitle", rows: 1 },
               { label: "Hero Subtitle", field: "processHeroSubtitle", rows: 2 },
@@ -552,8 +497,8 @@ export function AdminPage() {
 
         {/* ── Personal Branding ── */}
         {activeTab === "personal-branding" && (
-          <div className="max-w-[700px] space-y-5">
-            <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">Personal Branding Page Hero</h2>
+          <div className={ADMIN_PANEL}>
+            <h2 className={SECTION_HEADING}>Personal Branding Page Hero</h2>
             {[
               { label: "Hero Title", field: "personalBrandingHeroTitle", rows: 1 },
               { label: "Hero Subtitle", field: "personalBrandingHeroSubtitle", rows: 2 },
@@ -571,8 +516,8 @@ export function AdminPage() {
 
         {/* ── Contact ── */}
         {activeTab === "contact" && (
-          <div className="max-w-[700px] space-y-5">
-            <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">Contact Page Content</h2>
+          <div className={ADMIN_PANEL}>
+            <h2 className={SECTION_HEADING}>Contact Page Content</h2>
             {[
               { label: "Hero Title", field: "contactHeroTitle", rows: 2 },
               { label: "Subtitle", field: "contactSubtitle", rows: 2 },
@@ -590,9 +535,9 @@ export function AdminPage() {
 
         {/* ── Footer ── */}
         {activeTab === "footer" && (
-          <div className="max-w-[700px] space-y-6">
+          <div className={ADMIN_PANEL}>
             <div>
-              <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em] mb-4">Footer Links</h2>
+              <h2 className={`${SECTION_HEADING} mb-4`}>Footer Links</h2>
               {store.footerLinks.map((link, index) => (
                 <div key={index} className="p-4 border border-border bg-card mb-3 grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -622,390 +567,14 @@ export function AdminPage() {
           </div>
         )}
 
-        {/* ── Media ── */}
-        {activeTab === "media" && (
-          <div className="space-y-8">
-            <div className="flex items-center justify-between flex-wrap gap-3">
-              <div>
-                <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">Media Library</h2>
-                <p className="mt-1 text-[12px] opacity-50">Upload images and videos to Supabase Storage. Use URLs in CMS fields.</p>
-              </div>
-              <button onClick={fetchMedia} className="flex items-center gap-2 px-3 py-2 border border-border text-[12px] tracking-[0.05em] hover:border-primary transition-colors">
-                <RefreshCw className="w-3.5 h-3.5" /> Refresh
-              </button>
-            </div>
+        {/* ── Media (extracted component) ── */}
+        {activeTab === "media" && <MediaTab />}
 
-            {/* Upload card */}
-            <div className="border border-border p-5 md:p-6 space-y-4 max-w-[700px]">
-              <p className="text-[13px] tracking-[0.05em] opacity-60 uppercase text-[11px]">Upload New File</p>
+        {/* ── Reviews (extracted component) ── */}
+        {activeTab === "reviews" && <ReviewsTab onCountChange={setPendingReviewCount} />}
 
-              <div>
-                <input ref={mediaFileRef} type="file"
-                  accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml,video/mp4,video/webm"
-                  onChange={handleMediaFileChange} className="hidden"
-                />
-                <button onClick={() => mediaFileRef.current?.click()}
-                  className="flex items-center gap-3 px-5 py-3 border-2 border-dashed border-border hover:border-primary transition-colors text-[13px] tracking-[0.05em] w-full justify-center"
-                >
-                  <Upload className="w-4 h-4 opacity-50" />
-                  {mediaFile ? (
-                    <span>{mediaFile.name} <span className="opacity-40">({(mediaFile.size / 1024).toFixed(0)} KB)</span></span>
-                  ) : (
-                    <span className="opacity-50">Click to select image or video</span>
-                  )}
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block mb-1.5 text-[11px] tracking-[0.1em] opacity-50 uppercase">Name / Label</label>
-                  <input type="text" value={mediaName} onChange={(e) => setMediaName(e.target.value)}
-                    placeholder="e.g. Hero Image Jan 2025"
-                    className={INPUT_CLS}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1.5 text-[11px] tracking-[0.1em] opacity-50 uppercase">Purpose</label>
-                  <select value={mediaPurpose} onChange={(e) => setMediaPurpose(e.target.value)}
-                    className={`${INPUT_CLS} appearance-none`}
-                  >
-                    <option value="general">General</option>
-                    <option value="hero">Hero</option>
-                    <option value="portfolio">Portfolio</option>
-                    <option value="about">About</option>
-                    <option value="team">Team</option>
-                  </select>
-                </div>
-              </div>
-
-              {uploadError && <p className="text-[12px] text-red-500">{uploadError}</p>}
-
-              <button onClick={handleUpload} disabled={uploading || !mediaFile}
-                className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground text-[12px] tracking-[0.08em] uppercase hover:opacity-90 transition-opacity disabled:opacity-40"
-              >
-                {uploading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                {uploading ? "Uploading…" : "Upload to Supabase"}
-              </button>
-            </div>
-
-            {/* Media grid */}
-            {mediaLoading ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {[...Array(8)].map((_, i) => (
-                  <div key={i} className="aspect-square border border-border bg-secondary/30 animate-pulse" />
-                ))}
-              </div>
-            ) : mediaItems.length === 0 ? (
-              <div className="py-12 text-center border border-border">
-                <p className="opacity-40 text-[13px]">No media uploaded yet.</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {mediaItems.map((item) => (
-                  <div key={item.id} className="group relative border border-border overflow-hidden bg-secondary/20">
-                    {/* Preview */}
-                    <div className="aspect-square relative overflow-hidden bg-secondary/40">
-                      {item.type === "image" ? (
-                        <img src={item.url} alt={item.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center gap-2">
-                          <Video className="w-8 h-8 opacity-30" />
-                          <span className="text-[10px] opacity-40 tracking-[0.08em]">VIDEO</span>
-                        </div>
-                      )}
-                      {/* Hover overlay */}
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                        <a href={item.url} target="_blank" rel="noreferrer"
-                          className="p-2 bg-white/20 hover:bg-white/30 transition-colors"
-                          title="Open in new tab"
-                        >
-                          <Eye className="w-4 h-4 text-white" />
-                        </a>
-                        <button onClick={() => handleCopyUrl(item.id, item.url)}
-                          className="p-2 bg-white/20 hover:bg-white/30 transition-colors"
-                          title="Copy URL"
-                        >
-                          {copiedId === item.id
-                            ? <Check className="w-4 h-4 text-green-400" />
-                            : <Copy className="w-4 h-4 text-white" />
-                          }
-                        </button>
-                        <button onClick={() => handleMediaDelete(item.id, item.storage_path)}
-                          className="p-2 bg-red-500/40 hover:bg-red-500/60 transition-colors"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4 text-white" />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Info */}
-                    <div className="p-2.5">
-                      <div className="flex items-center gap-1.5 mb-0.5">
-                        {item.type === "video"
-                          ? <Video className="w-3 h-3 opacity-40 shrink-0" />
-                          : <ImageIcon className="w-3 h-3 opacity-40 shrink-0" />
-                        }
-                        <p className="text-[11px] truncate opacity-70">{item.name}</p>
-                      </div>
-                      <p className="text-[10px] opacity-35 tracking-[0.07em]">{item.purpose}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ── Reviews ── */}
-        {activeTab === "reviews" && (
-          <div className="space-y-5">
-            <div className="flex items-center justify-between flex-wrap gap-3">
-              <div>
-                <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">
-                  Reviews
-                  {pendingReviewCount > 0 && (
-                    <span className="ml-3 text-[12px] px-2 py-0.5 bg-yellow-500/15 text-yellow-700 border border-yellow-200">
-                      {pendingReviewCount} pending
-                    </span>
-                  )}
-                </h2>
-                <p className="mt-1 text-[12px] opacity-50">Approve, reject, or feature client reviews.</p>
-              </div>
-              <button onClick={fetchReviews} className="flex items-center gap-2 px-3 py-2 border border-border text-[12px] tracking-[0.05em] hover:border-primary transition-colors">
-                <RefreshCw className="w-3.5 h-3.5" /> Refresh
-              </button>
-            </div>
-
-            {/* Filter bar */}
-            <div className="flex items-center gap-2 flex-wrap">
-              {(["all", "pending", "approved", "rejected"] as const).map((f) => (
-                <button key={f} onClick={() => setReviewFilter(f)}
-                  className={`px-3 py-1.5 text-[11px] tracking-[0.08em] border transition-colors capitalize ${
-                    reviewFilter === f ? "border-primary text-primary bg-primary/5" : "border-border text-primary/50 hover:text-primary"
-                  }`}
-                >
-                  {f === "all"
-                    ? `All (${reviews.length})`
-                    : `${f} (${reviews.filter(r => r.status === f).length})`
-                  }
-                </button>
-              ))}
-            </div>
-
-            {reviewsLoading ? (
-              <div className="py-12 text-center opacity-40 text-[13px]">Loading reviews…</div>
-            ) : filteredReviews.length === 0 ? (
-              <div className="py-12 text-center border border-border">
-                <p className="opacity-40 text-[13px]">No reviews in this category.</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {filteredReviews.map((review) => (
-                  <div key={review.id} className="border border-border bg-card p-4 md:p-5">
-                    <div className="flex items-start gap-4 flex-wrap">
-                      {/* Left: content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-3 mb-1 flex-wrap">
-                          <p className="text-[14px]">{review.name}</p>
-                          {(review.role || review.company) && (
-                            <p className="text-[11px] opacity-40">
-                              {[review.role, review.company].filter(Boolean).join(" · ")}
-                            </p>
-                          )}
-                          <StarRow rating={review.rating} />
-                        </div>
-                        <p className="text-[10px] tracking-[0.1em] opacity-35 mb-2 uppercase">
-                          {review.service_used.replace(/-/g, " ")}
-                        </p>
-                        <p className="text-[13px] leading-relaxed opacity-65 italic">
-                          "{review.review_text}"
-                        </p>
-                        <p className="mt-2 text-[10px] opacity-30">
-                          {new Date(review.created_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
-                        </p>
-                      </div>
-
-                      {/* Right: actions */}
-                      <div className="flex flex-col gap-2 shrink-0">
-                        {/* Status badge */}
-                        <span className={`inline-flex items-center px-2 py-0.5 text-[10px] tracking-[0.1em] border ${REVIEW_STATUS_COLORS[review.status]}`}>
-                          {REVIEW_STATUS_LABELS[review.status]}
-                        </span>
-
-                        {/* Action buttons */}
-                        <div className="flex gap-1.5 flex-wrap">
-                          {review.status !== "approved" && (
-                            <button onClick={() => handleReviewStatus(review.id, "approved")}
-                              className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] tracking-[0.07em] border border-green-300 text-green-700 hover:bg-green-50 transition-colors"
-                            >
-                              <Check className="w-3 h-3" /> Approve
-                            </button>
-                          )}
-                          {review.status !== "rejected" && (
-                            <button onClick={() => handleReviewStatus(review.id, "rejected")}
-                              className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] tracking-[0.07em] border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
-                            >
-                              <X className="w-3 h-3" /> Reject
-                            </button>
-                          )}
-                          {review.status === "pending" && (
-                            <button onClick={() => handleReviewStatus(review.id, "pending")}
-                              className="px-2.5 py-1.5 text-[11px] tracking-[0.07em] border border-border opacity-50 hover:opacity-100 transition-opacity"
-                            >
-                              Keep Pending
-                            </button>
-                          )}
-                        </div>
-
-                        {/* Feature toggle */}
-                        {review.status === "approved" && (
-                          <button
-                            onClick={() => handleReviewFeatured(review.id, !review.featured)}
-                            className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] tracking-[0.07em] border transition-colors ${
-                              review.featured
-                                ? "border-primary bg-primary/5 text-primary"
-                                : "border-border opacity-60 hover:opacity-100"
-                            }`}
-                          >
-                            <Star className={`w-3 h-3 ${review.featured ? "fill-current" : ""}`} />
-                            {review.featured ? "Featured" : "Feature"}
-                          </button>
-                        )}
-
-                        {/* Delete */}
-                        <button onClick={() => handleReviewDelete(review.id)}
-                          className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] tracking-[0.07em] border border-border opacity-40 hover:opacity-80 hover:border-red-300 hover:text-red-600 transition-all"
-                        >
-                          <Trash2 className="w-3 h-3" /> Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ── Submissions ── */}
-        {activeTab === "submissions" && (
-          <div className="space-y-5">
-            <div className="flex items-center justify-between flex-wrap gap-3">
-              <h2 className="text-[18px] md:text-[20px] tracking-[-0.01em]">
-                Contact Submissions
-                {newCount > 0 && (
-                  <span className="ml-3 text-[12px] px-2 py-0.5 bg-blue-500/15 text-blue-600 border border-blue-200">
-                    {newCount} new
-                  </span>
-                )}
-              </h2>
-              <button onClick={fetchSubmissions} className="flex items-center gap-2 px-3 py-2 border border-border text-[12px] tracking-[0.05em] hover:border-primary transition-colors">
-                <RefreshCw className="w-3.5 h-3.5" /> Refresh
-              </button>
-            </div>
-
-            {submissionsLoading ? (
-              <div className="py-12 text-center opacity-40 text-[13px]">Loading submissions…</div>
-            ) : submissions.length === 0 ? (
-              <div className="py-12 text-center border border-border">
-                <p className="opacity-40 text-[13px]">No submissions yet.</p>
-                <p className="mt-1 opacity-25 text-[12px]">They'll appear here when someone fills out the contact form.</p>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {submissions.map((sub) => {
-                  const isExpanded = expandedId === sub.id;
-                  return (
-                    <div key={sub.id} className="border border-border bg-card">
-                      {/* Row header */}
-                      <button
-                        onClick={() => setExpandedId(isExpanded ? null : sub.id)}
-                        className="w-full text-left px-4 py-4 grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto_auto] gap-3 sm:gap-4 items-center hover:bg-secondary/30 transition-colors"
-                      >
-                        <div>
-                          <p className="text-[14px] font-normal">{sub.name}</p>
-                          <p className="text-[12px] opacity-50">{sub.email}</p>
-                        </div>
-                        <div>
-                          <p className="text-[13px] opacity-70">{sub.business_name}</p>
-                          <p className="text-[11px] opacity-40 capitalize">{sub.industry.replace(/-/g, " ")}</p>
-                        </div>
-                        <span className={`inline-flex items-center px-2 py-0.5 text-[10px] tracking-[0.1em] border ${STATUS_COLORS[sub.status]}`}>
-                          {STATUS_LABELS[sub.status]}
-                        </span>
-                        <div className="flex items-center gap-2 text-[11px] opacity-40">
-                          <span>{new Date(sub.created_at).toLocaleDateString()}</span>
-                          {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                        </div>
-                      </button>
-
-                      {/* Expanded details */}
-                      {isExpanded && (
-                        <div className="border-t border-border px-4 pb-5 pt-4 space-y-4">
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            {[
-                              { label: "Service Needed", value: sub.service_needed.replace(/-/g, " ") },
-                              { label: "Budget", value: sub.budget_range?.replace(/-/g, " ") ?? "Not specified" },
-                              { label: "Phone", value: sub.phone ?? "Not provided" },
-                              { label: "Submitted", value: new Date(sub.created_at).toLocaleString() },
-                            ].map(({ label, value }) => (
-                              <div key={label}>
-                                <p className="text-[10px] tracking-[0.12em] opacity-40 mb-1">{label.toUpperCase()}</p>
-                                <p className="text-[13px] opacity-70 capitalize">{value}</p>
-                              </div>
-                            ))}
-                          </div>
-
-                          {/* Reply shortcut */}
-                          <div>
-                            <a
-                              href={`mailto:${sub.email}?subject=Re: Your consultation request — S.Socials&body=Dear ${sub.name},%0A%0AThank you for reaching out to S.Socials.%0A%0A`}
-                              className="inline-flex items-center gap-2 px-4 py-2 border border-border text-[12px] tracking-[0.05em] hover:border-primary transition-colors"
-                            >
-                              Reply via email
-                            </a>
-                          </div>
-
-                          {/* Status change */}
-                          <div className="flex items-center gap-3 flex-wrap">
-                            <span className="text-[11px] tracking-[0.08em] opacity-50">STATUS:</span>
-                            {(["new", "read", "replied"] as SubmissionStatus[]).map((s) => (
-                              <button key={s} onClick={() => handleStatusChange(sub.id, s)}
-                                className={`px-3 py-1.5 text-[11px] tracking-[0.08em] border transition-colors ${
-                                  sub.status === s ? STATUS_COLORS[s] : "border-border opacity-50 hover:opacity-100"
-                                }`}
-                              >
-                                {STATUS_LABELS[s]}
-                              </button>
-                            ))}
-                          </div>
-
-                          {/* Notes */}
-                          <div>
-                            <label className="block mb-1.5 text-[11px] tracking-[0.08em] opacity-50">INTERNAL NOTES</label>
-                            <textarea
-                              value={noteDrafts[sub.id] ?? ""}
-                              onChange={(e) => setNoteDrafts((prev) => ({ ...prev, [sub.id]: e.target.value }))}
-                              rows={2}
-                              placeholder="Add internal notes…"
-                              className={TEXTAREA_CLS}
-                            />
-                            <button onClick={() => handleNoteSave(sub.id)}
-                              className="mt-2 px-4 py-1.5 text-[11px] tracking-[0.08em] border border-border hover:border-primary transition-colors"
-                            >
-                              Save Note
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
+        {/* ── Submissions (extracted component) ── */}
+        {activeTab === "submissions" && <SubmissionsTab onCountChange={setNewCount} />}
       </div>
     </div>
   );

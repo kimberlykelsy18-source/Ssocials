@@ -2,6 +2,7 @@ import { Button } from "../components/Button";
 import { DocumentHead } from "../components/DocumentHead";
 import { motion } from "motion/react";
 import { useContentStore } from "../store/contentStore";
+import { CONTAINER, EYEBROW } from "../lib/styles";
 
 export function ProcessPage() {
   const { processSteps: steps } = useContentStore();
@@ -14,7 +15,7 @@ export function ProcessPage() {
       />
 
       {/* Hero */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pt-8 md:pt-10 lg:pt-12 pb-10 md:pb-12">
+      <section className={`${CONTAINER} pt-8 md:pt-10 lg:pt-12 pb-10 md:pb-12`}>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -28,7 +29,7 @@ export function ProcessPage() {
               transition={{ duration: 0.7, ease: "easeOut" }}
               className="h-px w-10 bg-current opacity-25 origin-left"
             />
-            <span className="text-[10px] tracking-[0.18em] opacity-35">HOW WE WORK</span>
+            <span className={EYEBROW}>HOW WE WORK</span>
           </div>
           <h1 className="mb-4 text-[24px] md:text-[38px] lg:text-[48px] leading-[1.1] tracking-[-0.02em]">
             Our Process
@@ -40,7 +41,7 @@ export function ProcessPage() {
       </section>
 
       {/* Timeline */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pb-14 md:pb-18 lg:pb-24">
+      <section className={`${CONTAINER} pb-14 md:pb-18 lg:pb-24`}>
         <div className="max-w-[900px] mx-auto">
           {/* Vertical connector wrapper */}
           <div className="relative">
@@ -121,13 +122,13 @@ export function ProcessPage() {
 
       {/* CTA */}
       <section className="bg-primary text-primary-foreground">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-14 md:py-18 lg:py-24">
+        <div className={`${CONTAINER} py-14 md:py-18 lg:py-24`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="max-w-[680px] mx-auto text-center"
+            className="max-w-[700px] mx-auto text-center"
           >
             <p className="text-[10px] tracking-[0.2em] opacity-40 mb-4">START YOUR JOURNEY</p>
             <h2 className="mb-6 text-[24px] md:text-[32px] lg:text-[42px] leading-[1.15] tracking-[-0.02em]">

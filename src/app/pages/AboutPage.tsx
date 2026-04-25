@@ -3,6 +3,7 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { motion } from "motion/react";
 import { useContentStore } from "../store/contentStore";
 import { Button } from "../components/Button";
+import { CONTAINER } from "../lib/styles";
 
 export function AboutPage() {
   const store = useContentStore();
@@ -12,7 +13,7 @@ export function AboutPage() {
       <DocumentHead title="About — S.Socials" description={store.aboutText1} />
       
       {/* Hero */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pt-8 md:pt-10 lg:pt-12 pb-8 md:pb-10 lg:pb-12">
+      <section className={`${CONTAINER} pt-8 md:pt-10 lg:pt-12 pb-8 md:pb-10 lg:pb-12`}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -29,7 +30,7 @@ export function AboutPage() {
       </section>
 
       {/* Image */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pb-10 md:pb-14 lg:pb-16">
+      <section className={`${CONTAINER} pb-10 md:pb-14 lg:pb-16`}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -46,7 +47,7 @@ export function AboutPage() {
       </section>
 
       {/* Content Grid */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pb-10 md:pb-14 lg:pb-16">
+      <section className={`${CONTAINER} pb-10 md:pb-14 lg:pb-16`}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 lg:gap-14">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -80,7 +81,7 @@ export function AboutPage() {
 
       {/* Mission & Vision */}
       <section className="bg-secondary py-10 md:py-14 lg:py-16">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16">
+        <div className={CONTAINER}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-14">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -116,7 +117,7 @@ export function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-10 md:py-14 lg:py-16">
+      <section className={`${CONTAINER} py-10 md:py-14 lg:py-16`}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -3,6 +3,7 @@ import { DocumentHead } from "../components/DocumentHead";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { motion } from "motion/react";
 import { useContentStore } from "../store/contentStore";
+import { CONTAINER } from "../lib/styles";
 
 export function HomePage() {
   const store = useContentStore();
@@ -126,7 +127,7 @@ export function HomePage() {
 
       {/* Credibility Strip */}
       <section className="border-y border-border">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-5 md:py-6">
+        <div className={`${CONTAINER} py-5 md:py-6`}>
           <p className="text-[11px] md:text-[12px] lg:text-[13px] tracking-[0.05em] text-center opacity-60">
             {store.credibilityText}
           </p>
@@ -134,7 +135,7 @@ export function HomePage() {
       </section>
 
       {/* About + Image Section - Mobile First */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-10 md:py-14 lg:py-16">
+      <section className={`${CONTAINER} py-10 md:py-14 lg:py-16`}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -189,7 +190,7 @@ export function HomePage() {
 
       {/* Services Grid - Mobile First */}
       <section className="bg-secondary py-10 md:py-14 lg:py-16">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16">
+        <div className={CONTAINER}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -237,7 +238,7 @@ export function HomePage() {
       </section>
 
       {/* Featured Work - Mobile First */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-10 md:py-14 lg:py-16">
+      <section className={`${CONTAINER} py-10 md:py-14 lg:py-16`}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -294,7 +295,7 @@ export function HomePage() {
 
       {/* Process - Mobile First */}
       <section className="bg-secondary py-10 md:py-14 lg:py-16">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16">
+        <div className={CONTAINER}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -335,7 +336,7 @@ export function HomePage() {
       </section>
 
       {/* Who We Work With - Mobile First */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-10 md:py-14 lg:py-16">
+      <section className={`${CONTAINER} py-10 md:py-14 lg:py-16`}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -371,7 +372,7 @@ export function HomePage() {
 
       {/* CTA Section - Mobile First */}
       <section className="bg-primary text-primary-foreground py-10 md:py-14 lg:py-16">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 text-center">
+        <div className={`${CONTAINER} text-center`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

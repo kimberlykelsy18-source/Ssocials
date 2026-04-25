@@ -2,6 +2,7 @@ import { Button } from "../components/Button";
 import { DocumentHead } from "../components/DocumentHead";
 import { motion } from "motion/react";
 import { useContentStore } from "../store/contentStore";
+import { CONTAINER, EYEBROW, SECTION_HEADING } from "../lib/styles";
 
 export function PackagesPage() {
   const { packagesHeroTitle, packagesHeroSubtitle, packages } = useContentStore();
@@ -14,7 +15,7 @@ export function PackagesPage() {
       />
 
       {/* Hero */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pt-8 md:pt-10 lg:pt-12 pb-10 md:pb-12">
+      <section className={`${CONTAINER} pt-8 md:pt-10 lg:pt-12 pb-10 md:pb-12`}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-end">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -29,7 +30,7 @@ export function PackagesPage() {
                 transition={{ duration: 0.7, ease: "easeOut" }}
                 className="h-px w-10 bg-current opacity-25 origin-left"
               />
-              <span className="text-[10px] tracking-[0.18em] opacity-35">INVESTMENT</span>
+              <span className={EYEBROW}>INVESTMENT</span>
             </div>
             <h1 className="text-[24px] md:text-[38px] lg:text-[48px] leading-[1.1] tracking-[-0.02em]">
               {packagesHeroTitle}
@@ -50,7 +51,7 @@ export function PackagesPage() {
       </section>
 
       {/* Packages Grid */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pb-14 md:pb-18 lg:pb-24">
+      <section className={`${CONTAINER} pb-14 md:pb-18 lg:pb-24`}>
         {/* Top divider */}
         <motion.div
           initial={{ scaleX: 0 }}
@@ -99,9 +100,7 @@ export function PackagesPage() {
                         FLAGSHIP
                       </span>
                     )}
-                    <h2 className={`mb-1.5 text-[18px] md:text-[20px] tracking-[-0.01em] ${
-                      isFeatured ? "" : ""
-                    }`}>
+                    <h2 className={`mb-1.5 ${SECTION_HEADING}`}>
                       {pkg.name}
                     </h2>
                     <p className={`text-[12px] tracking-[0.03em] ${
@@ -161,13 +160,13 @@ export function PackagesPage() {
 
       {/* CTA */}
       <section className="bg-primary text-primary-foreground">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-14 md:py-18 lg:py-24">
+        <div className={`${CONTAINER} py-14 md:py-18 lg:py-24`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="max-w-[680px] mx-auto text-center"
+            className="max-w-[700px] mx-auto text-center"
           >
             <p className="text-[10px] tracking-[0.2em] opacity-40 mb-4">TAKE THE FIRST STEP</p>
             <h2 className="mb-6 text-[24px] md:text-[32px] lg:text-[42px] leading-[1.15] tracking-[-0.02em]">

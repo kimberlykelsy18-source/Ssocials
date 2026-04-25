@@ -2,6 +2,7 @@ import { Button } from "../components/Button";
 import { DocumentHead } from "../components/DocumentHead";
 import { motion } from "motion/react";
 import { useContentStore } from "../store/contentStore";
+import { CONTAINER, EYEBROW } from "../lib/styles";
 
 export function PersonalBrandingPage() {
   const { personalBrandingOfferings: offerings, personalBrandingAudiences: audiences } = useContentStore();
@@ -14,7 +15,7 @@ export function PersonalBrandingPage() {
       />
 
       {/* Hero — manifesto-style */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pt-8 md:pt-10 lg:pt-12 pb-10 md:pb-12">
+      <section className={`${CONTAINER} pt-8 md:pt-10 lg:pt-12 pb-10 md:pb-12`}>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -28,7 +29,7 @@ export function PersonalBrandingPage() {
               transition={{ duration: 0.7, ease: "easeOut" }}
               className="h-px w-10 bg-current opacity-25 origin-left"
             />
-            <span className="text-[10px] tracking-[0.18em] opacity-35">PERSONAL BRANDING</span>
+            <span className={EYEBROW}>PERSONAL BRANDING</span>
           </div>
           <h1 className="mb-5 md:mb-6 text-[24px] md:text-[38px] lg:text-[48px] leading-[1.1] tracking-[-0.02em]">
             Build a Personal Brand<br className="hidden md:block" /> That Builds Trust
@@ -53,7 +54,7 @@ export function PersonalBrandingPage() {
 
       {/* What We Offer — numbered editorial grid */}
       <section className="bg-secondary border-y border-border">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-10 md:py-12 lg:py-14">
+        <div className={`${CONTAINER} py-10 md:py-12 lg:py-14`}>
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -62,7 +63,7 @@ export function PersonalBrandingPage() {
             className="flex items-center gap-3 mb-8 md:mb-10"
           >
             <div className="h-px w-10 bg-current opacity-25" />
-            <span className="text-[10px] tracking-[0.18em] opacity-35">WHAT WE OFFER</span>
+            <span className={EYEBROW}>WHAT WE OFFER</span>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border border-border">
@@ -113,7 +114,7 @@ export function PersonalBrandingPage() {
       </section>
 
       {/* Who This Is For */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-10 md:py-12 lg:py-14">
+      <section className={`${CONTAINER} py-10 md:py-12 lg:py-14`}>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -122,7 +123,7 @@ export function PersonalBrandingPage() {
           className="flex items-center gap-3 mb-8 md:mb-10"
         >
           <div className="h-px w-10 bg-current opacity-25" />
-          <span className="text-[10px] tracking-[0.18em] opacity-35">WHO THIS IS FOR</span>
+          <span className={EYEBROW}>WHO THIS IS FOR</span>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-border">
@@ -153,13 +154,13 @@ export function PersonalBrandingPage() {
 
       {/* CTA */}
       <section className="bg-primary text-primary-foreground">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-14 md:py-18 lg:py-24">
+        <div className={`${CONTAINER} py-14 md:py-18 lg:py-24`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="max-w-[680px] mx-auto text-center"
+            className="max-w-[700px] mx-auto text-center"
           >
             <p className="text-[10px] tracking-[0.2em] opacity-40 mb-4">YOUR AUTHORITY STARTS HERE</p>
             <h2 className="mb-6 text-[24px] md:text-[32px] lg:text-[42px] leading-[1.15] tracking-[-0.02em]">

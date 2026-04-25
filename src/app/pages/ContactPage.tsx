@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { useContentStore } from "../store/contentStore";
 import { submitContactForm } from "@backend/db";
 import { sendContactEmails } from "@backend/email";
+import { CONTAINER, INPUT, SELECT, TEXTAREA, LABEL } from "../lib/styles";
 
 export function ContactPage() {
   const store = useContentStore();
@@ -61,7 +62,7 @@ export function ContactPage() {
 
   if (submitted) {
     return (
-      <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-12 md:py-16 lg:py-20">
+      <div className={`${CONTAINER} py-12 md:py-16 lg:py-20`}>
         <DocumentHead
           title="Thank You — S.Socials"
           description="Thank you for your consultation request. We'll be in touch shortly."
@@ -100,7 +101,7 @@ export function ContactPage() {
       <DocumentHead title="Contact — S.Socials" description={store.contactSubtitle} />
       
       {/* Hero */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pt-8 md:pt-10 lg:pt-12 pb-6 md:pb-8">
+      <section className={`${CONTAINER} pt-8 md:pt-10 lg:pt-12 pb-6 md:pb-8`}>
         <div className="max-w-[900px] mx-auto text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -122,7 +123,7 @@ export function ContactPage() {
       </section>
 
       {/* Form */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pb-10 md:pb-14 lg:pb-16">
+      <section className={`${CONTAINER} pb-10 md:pb-14 lg:pb-16`}>
         <motion.form
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -143,7 +144,7 @@ export function ContactPage() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full px-3 md:px-4 py-2.5 md:py-3 border border-border bg-input-background text-[14px] md:text-[15px] focus:outline-none focus:border-primary transition-colors"
+                className={INPUT}
                 placeholder="John Doe"
               />
             </div>
@@ -160,7 +161,7 @@ export function ContactPage() {
                 value={formData.businessName}
                 onChange={handleChange}
                 required
-                className="w-full px-3 md:px-4 py-2.5 md:py-3 border border-border bg-input-background text-[14px] md:text-[15px] focus:outline-none focus:border-primary transition-colors"
+                className={INPUT}
                 placeholder="Your Business Name"
               />
             </div>
@@ -176,7 +177,7 @@ export function ContactPage() {
                 value={formData.industry}
                 onChange={handleChange}
                 required
-                className="w-full px-3 md:px-4 py-2.5 md:py-3 border border-border bg-input-background text-[14px] md:text-[15px] focus:outline-none focus:border-primary transition-colors appearance-none"
+                className={SELECT}
               >
                 <option value="">Select an industry</option>
                 <option value="aesthetic-clinic">Aesthetic Clinic</option>
@@ -200,7 +201,7 @@ export function ContactPage() {
                 value={formData.serviceNeeded}
                 onChange={handleChange}
                 required
-                className="w-full px-3 md:px-4 py-2.5 md:py-3 border border-border bg-input-background text-[14px] md:text-[15px] focus:outline-none focus:border-primary transition-colors appearance-none"
+                className={SELECT}
               >
                 <option value="">Select a service</option>
                 <option value="brand-identity">Brand & Identity</option>
@@ -222,7 +223,7 @@ export function ContactPage() {
                 name="budgetRange"
                 value={formData.budgetRange}
                 onChange={handleChange}
-                className="w-full px-3 md:px-4 py-2.5 md:py-3 border border-border bg-input-background text-[14px] md:text-[15px] focus:outline-none focus:border-primary transition-colors appearance-none"
+                className={SELECT}
               >
                 <option value="">Select a range</option>
                 <option value="under-5k">Under $5,000</option>
@@ -245,7 +246,7 @@ export function ContactPage() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full px-3 md:px-4 py-2.5 md:py-3 border border-border bg-input-background text-[14px] md:text-[15px] focus:outline-none focus:border-primary transition-colors"
+                className={INPUT}
                 placeholder="you@example.com"
               />
             </div>
@@ -261,7 +262,7 @@ export function ContactPage() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full px-3 md:px-4 py-2.5 md:py-3 border border-border bg-input-background text-[14px] md:text-[15px] focus:outline-none focus:border-primary transition-colors"
+                className={INPUT}
                 placeholder="+1 (555) 000-0000"
               />
             </div>

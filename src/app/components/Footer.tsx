@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { Logo } from "./Logo";
 import { useContentStore } from "../store/contentStore";
+import { CONTAINER } from "../lib/styles";
 import footerBg from "../../assests/footer-bg.jpg";
 
 export function Footer() {
@@ -26,7 +27,7 @@ export function Footer() {
       <div className="relative">
       {/* Top statement bar */}
       <div className="border-b border-primary-foreground/10">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-8 md:py-10">
+        <div className={`${CONTAINER} py-8 md:py-10`}>
           <p className="text-[10px] md:text-[11px] tracking-[0.2em] opacity-40 text-center">
             HEALTH · BEAUTY · WELLNESS · PRIVATE HEALTHCARE
           </p>
@@ -34,7 +35,7 @@ export function Footer() {
       </div>
 
       {/* Main footer body */}
-      <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-10 md:py-14">
+      <div className={`${CONTAINER} py-10 md:py-14`}>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8">
 
           {/* Brand column */}
@@ -101,7 +102,7 @@ export function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-primary-foreground/10">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-5">
+        <div className={`${CONTAINER} py-5`}>
           <div className="flex flex-col sm:flex-row justify-between items-center gap-3 text-[10px] md:text-[11px] opacity-40 tracking-[0.05em]">
             <p>{footerText}</p>
             <p className="hidden sm:block">S.SOCIALS — PREMIUM BRAND GROWTH</p>

@@ -1,136 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { loadSiteContent, saveSiteContent, signIn, signOut } from "@backend/db";
-
-export interface NavItem {
-  name: string;
-  path: string;
-}
-
-export interface FooterLink {
-  name: string;
-  path: string;
-}
-
-export interface PageImage {
-  id: string;
-  url: string;
-  alt: string;
-}
-
-export interface ContentStore {
-  // Auth
-  isAuthenticated: boolean;
-  isSyncing: boolean;
-  loginWithEmail: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
-  logout: () => Promise<void>;
-
-  // Supabase sync
-  loadFromSupabase: () => Promise<void>;
-  saveToSupabase: () => Promise<{ ok: boolean; error?: string }>;
-
-  // Logo
-  logoUrl: string;
-  setLogoUrl: (url: string) => void;
-
-  // Navigation
-  navItems: NavItem[];
-  updateNavItems: (items: NavItem[]) => void;
-
-  // Footer
-  footerLinks: FooterLink[];
-  footerText: string;
-  updateFooterLinks: (links: FooterLink[]) => void;
-  updateFooterText: (text: string) => void;
-
-  // Home Page Content
-  homeHeroTitle: string;
-  homeHeroSubtitle: string;
-  homeAboutTitle: string;
-  homeAboutText1: string;
-  homeAboutText2: string;
-  credibilityText: string;
-  homeImages: {
-    hero: string;
-    aboutSection: string;
-    featuredWork1: string;
-    featuredWork2: string;
-  };
-
-  // About Page Content
-  aboutHeroTitle: string;
-  aboutText1: string;
-  aboutText2: string;
-  aboutText3: string;
-  aboutMission: string;
-  aboutVision: string;
-  aboutImages: {
-    hero: string;
-  };
-
-  // Services Page
-  servicesHeroTitle: string;
-  servicesHeroSubtitle: string;
-  servicesIntro: string;
-
-  // Portfolio Page
-  portfolioHeroTitle: string;
-  portfolioHeroSubtitle: string;
-  portfolioIntro: string;
-
-  // Process Page
-  processHeroTitle: string;
-  processHeroSubtitle: string;
-  processIntro: string;
-
-  // Personal Branding Page
-  personalBrandingHeroTitle: string;
-  personalBrandingHeroSubtitle: string;
-  personalBrandingIntro: string;
-
-  // Packages Page
-  packagesHeroTitle: string;
-  packagesHeroSubtitle: string;
-  packagesIntro: string;
-
-  // Services
-  services: Array<{ title: string; description: string }>;
-
-  // Process steps (from DB)
-  processSteps: Array<{ number: string; title: string; description: string; details: string }>;
-
-  // Portfolio case studies (from DB)
-  caseStudies: Array<{ title: string; problem: string; solution: string; result: string; image: string }>;
-
-  // Packages (from DB)
-  packages: Array<{ name: string; subtitle: string; includes: string[]; result: string; tier: number; featured?: boolean }>;
-
-  // Personal Branding (from DB)
-  personalBrandingOfferings: Array<{ number: string; title: string; desc: string }>;
-  personalBrandingAudiences: Array<{ title: string; statement: string; desc: string }>;
-
-  // Contact
-  contactHeroTitle: string;
-  contactSubtitle: string;
-
-  // Update functions
-  updateHomeContent: (field: string, value: string) => void;
-  updateHomeImages: (images: Partial<ContentStore["homeImages"]>) => void;
-  updateAboutContent: (field: string, value: string) => void;
-  updateAboutImages: (images: Partial<ContentStore["aboutImages"]>) => void;
-  updateServicesContent: (field: string, value: string) => void;
-  updatePortfolioContent: (field: string, value: string) => void;
-  updateProcessContent: (field: string, value: string) => void;
-  updatePersonalBrandingContent: (field: string, value: string) => void;
-  updatePackagesContent: (field: string, value: string) => void;
-  updateContactContent: (field: string, value: string) => void;
-  updateServices: (services: Array<{ title: string; description: string }>) => void;
-  updateProcessSteps: (steps: ContentStore["processSteps"]) => void;
-  updateCaseStudies: (studies: ContentStore["caseStudies"]) => void;
-  updatePackages: (packages: ContentStore["packages"]) => void;
-  updatePersonalBrandingOfferings: (offerings: ContentStore["personalBrandingOfferings"]) => void;
-  updatePersonalBrandingAudiences: (audiences: ContentStore["personalBrandingAudiences"]) => void;
-}
+export type { NavItem, FooterLink, PageImage, ContentStore } from "./contentStore.types";
+import type { ContentStore } from "./contentStore.types";
 
 // Extracts only the serializable content fields (no functions, no auth state)
 function getContentSnapshot(state: ContentStore): Record<string, unknown> {
@@ -173,6 +45,7 @@ function getContentSnapshot(state: ContentStore): Record<string, unknown> {
     contactSubtitle: state.contactSubtitle,
     processSteps: state.processSteps,
     caseStudies: state.caseStudies,
+    devProjects: state.devProjects,
     packages: state.packages,
     personalBrandingOfferings: state.personalBrandingOfferings,
     personalBrandingAudiences: state.personalBrandingAudiences,
@@ -372,6 +245,19 @@ export const useContentStore = create<ContentStore>()(
         { number: "04", title: "Scale", description: "We optimize and grow your brand sustainably.", details: "Post-launch, we monitor performance, gather insights, and continuously optimize. We help you scale strategically, ensuring your brand maintains its premium positioning as you grow." },
       ],
 
+      // ── Dev Projects ──────────────────────────────────────
+      devProjects: [
+        { name: "KasaPay", tech: "CBK-licensed PSP — full payment gateway built from the ground up, supporting cards, mobile money, bank transfers & multi-currency payouts", url: "https://www.kasapay.com" },
+        { name: "KasaPay — Mobile App", tech: "Android application · Mobile payment management for the KasaPay platform", url: "https://play.google.com/store/apps/details?id=com.biz.kasapay&hl=en&pli=1" },
+        { name: "RemitCore", tech: "Cross-border remittance platform built from the ground up — single API integration for international transfers, bill payments & multi-corridor settlement", url: "https://www.remitcore.co" },
+        { name: "RemitCore — Complaints Portal", tech: "Internal customer support portal — complaint intake, tracking & resolution system for RemitCore users", url: "https://complaints.remitcore.co/login" },
+        { name: "Magena Pilates", tech: "E-commerce & booking platform for a premium pilates equipment manufacturer", url: "https://www.magenapilates.com" },
+        { name: "Magena Pilates — Admin", tech: "Custom admin dashboard · Content, inventory & order management", url: "https://www.magenapilates.com/admin" },
+        { name: "Premier Beauty Clinic", tech: "Full website & booking platform for a beauty & cosmetic clinic", url: "https://premierbeautyclinic.vercel.app" },
+        { name: "Premier Beauty Clinic — Staff Portal", tech: "Internal staff management & admin dashboard", url: "https://premierbeautyclinic.vercel.app/staff/login" },
+        { name: "S.Socials", tech: "Agency portfolio & CMS · React, TypeScript, Supabase", url: "https://ssocials.co" },
+      ],
+
       // ── Case Studies ──────────────────────────────────────
       caseStudies: [
         { title: "Aesthetic Clinic", problem: "Weak branding and low perceived value", solution: "Full rebrand + marketing strategy", result: "Increased bookings and higher-value clients", image: "https://images.unsplash.com/photo-1759262151080-e05ba1c6294f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBhZXN0aGV0aWMlMjBjbGluaWMlMjBpbnRlcmlvcnxlbnwxfHx8fDE3NzU3NTAzNjd8MA&ixlib=rb-4.1.0&q=80&w=1080" },
@@ -419,14 +305,14 @@ export const useContentStore = create<ContentStore>()(
       updateServices: (services) => set({ services }),
       updateProcessSteps: (processSteps) => set({ processSteps }),
       updateCaseStudies: (caseStudies) => set({ caseStudies }),
+      updateDevProjects: (devProjects) => set({ devProjects }),
       updatePackages: (packages) => set({ packages }),
       updatePersonalBrandingOfferings: (personalBrandingOfferings) => set({ personalBrandingOfferings }),
       updatePersonalBrandingAudiences: (personalBrandingAudiences) => set({ personalBrandingAudiences }),
     }),
     {
       name: "ssocials-content-storage",
-      version: 2,
-      // Migrate old persisted state — v1 → v2 injects Reviews into navItems
+      version: 6,
       migrate: (persistedState: unknown, version: number) => {
         const state = persistedState as Record<string, unknown>;
         if (version < 2) {
@@ -440,6 +326,37 @@ export const useContentStore = create<ContentStore>()(
               navItems.push({ name: "Reviews", path: "/reviews" });
             }
             state.navItems = [...navItems];
+          }
+        }
+        if (version < 3) {
+          const existing = (state.devProjects as Array<unknown>) ?? [];
+          if (existing.length === 0) {
+            state.devProjects = [
+              { name: "KasaPay", tech: "CBK-licensed PSP — full payment gateway built from the ground up, supporting cards, mobile money, bank transfers & multi-currency payouts", url: "https://www.kasapay.com" },
+              { name: "KasaPay — Mobile App", tech: "Android application · Mobile payment management for the KasaPay platform", url: "https://play.google.com/store/apps/details?id=com.biz.kasapay&hl=en&pli=1" },
+              { name: "RemitCore", tech: "Cross-border remittance platform built from the ground up — single API integration for international transfers, bill payments & multi-corridor settlement", url: "https://www.remitcore.co" },
+              { name: "RemitCore — Complaints Portal", tech: "Internal customer support portal — complaint intake, tracking & resolution system for RemitCore users", url: "https://complaints.remitcore.co/login" },
+              { name: "Magena Pilates", tech: "E-commerce & booking platform for a premium pilates equipment manufacturer", url: "https://www.magenapilates.com" },
+              { name: "Magena Pilates — Admin", tech: "Custom admin dashboard · Content, inventory & order management", url: "https://www.magenapilates.com/admin" },
+              { name: "S.Socials", tech: "Agency portfolio & CMS · React, TypeScript, Supabase", url: "https://ssocials.co" },
+            ];
+          }
+        }
+        if (version < 6) {
+          const projects = (state.devProjects as Array<{ name: string; tech: string; url: string; image?: string }>) ?? [];
+          const hasPremier = projects.some((p) => p.url.includes("premierbeautyclinic"));
+          if (!hasPremier) {
+            const ssocialsIdx = projects.findIndex((p) => p.url.includes("ssocials"));
+            const newEntries = [
+              { name: "Premier Beauty Clinic", tech: "Full website & booking platform for a beauty & cosmetic clinic", url: "https://premierbeautyclinic.vercel.app" },
+              { name: "Premier Beauty Clinic — Staff Portal", tech: "Internal staff management & admin dashboard", url: "https://premierbeautyclinic.vercel.app/staff/login" },
+            ];
+            if (ssocialsIdx !== -1) {
+              projects.splice(ssocialsIdx, 0, ...newEntries);
+            } else {
+              projects.push(...newEntries);
+            }
+            state.devProjects = [...projects];
           }
         }
         return state;

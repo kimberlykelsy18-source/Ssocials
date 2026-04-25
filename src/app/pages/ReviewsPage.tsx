@@ -4,22 +4,8 @@ import { DocumentHead } from "../components/DocumentHead";
 import { motion } from "motion/react";
 import { Star, Quote, Send, CheckCircle } from "lucide-react";
 import { getApprovedReviews, submitReview, type Review } from "@backend/db";
-
-// ─── Star display ─────────────────────────────────────────────────────────────
-
-function StarDisplay({ rating, size = 13 }: { rating: number; size?: number }) {
-  return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((s) => (
-        <Star
-          key={s}
-          style={{ width: size, height: size }}
-          className={s <= rating ? "fill-current" : "opacity-15 fill-current"}
-        />
-      ))}
-    </div>
-  );
-}
+import { StarRating } from "../components/StarRating";
+import { CONTAINER, EYEBROW, SECTION_HEADING, INPUT, SELECT, TEXTAREA, LABEL } from "../lib/styles";
 
 function StarPicker({ value, onChange }: { value: number; onChange: (v: number) => void }) {
   const [hovered, setHovered] = useState(0);
@@ -70,7 +56,7 @@ function ReviewCard({ review, index }: { review: Review; index: number }) {
 
       {/* Stars */}
       <div className="mb-4">
-        <StarDisplay rating={review.rating} size={13} />
+        <StarRating rating={review.rating} size={13} />
       </div>
 
       {/* Review text */}
@@ -118,7 +104,7 @@ function FeaturedReviewCard({ review, index }: { review: Review; index: number }
 
       <div className="relative z-10">
         <div className="mb-5">
-          <StarDisplay rating={review.rating} size={14} />
+          <StarRating rating={review.rating} size={14} />
         </div>
 
         <p className="text-[15px] md:text-[17px] lg:text-[18px] leading-relaxed opacity-85 mb-6 italic font-light">
@@ -211,7 +197,7 @@ function SubmitReviewForm() {
       >
         <CheckCircle className="w-10 h-10 opacity-60" />
         <div>
-          <h3 className="text-[18px] md:text-[20px] tracking-[-0.01em] mb-2">
+          <h3 className={`${SECTION_HEADING} mb-2`}>
             Thank you for your review
           </h3>
           <p className="text-[13px] md:text-[14px] opacity-50 leading-relaxed max-w-[380px]">
@@ -237,7 +223,7 @@ function SubmitReviewForm() {
             onChange={handleChange}
             required
             placeholder="Dr. Jane Smith"
-            className="w-full px-4 py-3 border border-border bg-input-background text-[14px] focus:outline-none focus:border-primary transition-colors"
+            className={INPUT}
           />
         </div>
         <div>
@@ -250,7 +236,7 @@ function SubmitReviewForm() {
             value={formData.company}
             onChange={handleChange}
             placeholder="Smith Aesthetics"
-            className="w-full px-4 py-3 border border-border bg-input-background text-[14px] focus:outline-none focus:border-primary transition-colors"
+            className={INPUT}
           />
         </div>
       </div>
@@ -267,7 +253,7 @@ function SubmitReviewForm() {
             value={formData.role}
             onChange={handleChange}
             placeholder="Founder & Medical Director"
-            className="w-full px-4 py-3 border border-border bg-input-background text-[14px] focus:outline-none focus:border-primary transition-colors"
+            className={INPUT}
           />
         </div>
         <div>
@@ -279,7 +265,7 @@ function SubmitReviewForm() {
             value={formData.service_used}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-border bg-input-background text-[14px] focus:outline-none focus:border-primary transition-colors appearance-none"
+            className={SELECT}
           >
             <option value="">Select a service</option>
             {SERVICES.map((s) => (
@@ -312,7 +298,7 @@ function SubmitReviewForm() {
           required
           rows={4}
           placeholder="Share your experience working with S.Socials…"
-          className="w-full px-4 py-3 border border-border bg-input-background text-[14px] focus:outline-none focus:border-primary transition-colors resize-none leading-relaxed"
+          className={`${TEXTAREA} leading-relaxed`}
         />
       </div>
 
@@ -364,12 +350,12 @@ export function ReviewsPage() {
       />
 
       {/* ── Hero ── */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pt-8 md:pt-10 lg:pt-12 pb-10 md:pb-12">
+      <section className={`${CONTAINER} pt-8 md:pt-10 lg:pt-12 pb-10 md:pb-12`}>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="max-w-[680px]"
+          className="max-w-[700px]"
         >
           <div className="flex items-center gap-3 mb-5">
             <motion.div
@@ -378,7 +364,7 @@ export function ReviewsPage() {
               transition={{ duration: 0.7, ease: "easeOut" }}
               className="h-px w-10 bg-current opacity-25 origin-left"
             />
-            <span className="text-[10px] tracking-[0.18em] opacity-35">CLIENT REVIEWS</span>
+            <span className={EYEBROW}>CLIENT REVIEWS</span>
           </div>
           <h1 className="mb-5 text-[24px] md:text-[38px] lg:text-[50px] leading-[1.1] tracking-[-0.02em]">
             Real Results.<br className="hidden md:block" /> Real Brands.
@@ -392,7 +378,7 @@ export function ReviewsPage() {
       {/* ── Featured Reviews ── */}
       {featured.length > 0 && (
         <section className="bg-secondary border-y border-border">
-          <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-10 md:py-12 lg:py-14">
+          <div className={`${CONTAINER} py-10 md:py-12 lg:py-14`}>
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -401,7 +387,7 @@ export function ReviewsPage() {
               className="flex items-center gap-3 mb-8"
             >
               <div className="h-px w-10 bg-current opacity-25" />
-              <span className="text-[10px] tracking-[0.18em] opacity-35">FEATURED</span>
+              <span className={EYEBROW}>FEATURED</span>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
@@ -415,7 +401,7 @@ export function ReviewsPage() {
 
       {/* ── All Reviews Grid ── */}
       {(loading || regular.length > 0) && (
-        <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-10 md:py-12 lg:py-14">
+        <section className={`${CONTAINER} py-10 md:py-12 lg:py-14`}>
           {regular.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -425,7 +411,7 @@ export function ReviewsPage() {
               className="flex items-center gap-3 mb-8"
             >
               <div className="h-px w-10 bg-current opacity-25" />
-              <span className="text-[10px] tracking-[0.18em] opacity-35">
+              <span className={EYEBROW}>
                 {featured.length > 0 ? "MORE REVIEWS" : "ALL REVIEWS"}
               </span>
             </motion.div>
@@ -452,7 +438,7 @@ export function ReviewsPage() {
 
       {/* ── Empty state ── */}
       {!loading && reviews.length === 0 && (
-        <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-10 md:py-16">
+        <section className={`${CONTAINER} py-10 md:py-16`}>
           <div className="max-w-[480px] mx-auto text-center py-16 border border-border">
             <Quote className="w-8 h-8 mx-auto mb-4 opacity-20" />
             <p className="text-[14px] opacity-40">
@@ -464,8 +450,8 @@ export function ReviewsPage() {
 
       {/* ── Submit Review ── */}
       <section className="border-t border-border">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-12 md:py-16 lg:py-20">
-          <div className="max-w-[680px]">
+        <div className={`${CONTAINER} py-12 md:py-16 lg:py-20`}>
+          <div className="max-w-[700px]">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -475,7 +461,7 @@ export function ReviewsPage() {
             >
               <div className="flex items-center gap-3 mb-5">
                 <div className="h-px w-10 bg-current opacity-25" />
-                <span className="text-[10px] tracking-[0.18em] opacity-35">SHARE YOUR EXPERIENCE</span>
+                <span className={EYEBROW}>SHARE YOUR EXPERIENCE</span>
               </div>
               <h2 className="mb-3 text-[22px] md:text-[28px] lg:text-[34px] tracking-[-0.02em] leading-[1.2]">
                 Worked with us?
@@ -499,13 +485,13 @@ export function ReviewsPage() {
 
       {/* ── CTA ── */}
       <section className="bg-primary text-primary-foreground">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-14 md:py-18 lg:py-24">
+        <div className={`${CONTAINER} py-14 md:py-18 lg:py-24`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="max-w-[680px] mx-auto text-center"
+            className="max-w-[700px] mx-auto text-center"
           >
             <p className="text-[10px] tracking-[0.2em] opacity-40 mb-4">READY TO JOIN THEM?</p>
             <h2 className="mb-6 text-[24px] md:text-[32px] lg:text-[42px] leading-[1.15] tracking-[-0.02em]">

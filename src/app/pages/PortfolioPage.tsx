@@ -3,6 +3,7 @@ import { DocumentHead } from "../components/DocumentHead";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { motion } from "motion/react";
 import { useContentStore } from "../store/contentStore";
+import { CONTAINER, EYEBROW } from "../lib/styles";
 
 export function PortfolioPage() {
   const { caseStudies } = useContentStore();
@@ -15,7 +16,7 @@ export function PortfolioPage() {
       />
 
       {/* Hero */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pt-8 md:pt-10 lg:pt-12 pb-10 md:pb-12">
+      <section className={`${CONTAINER} pt-8 md:pt-10 lg:pt-12 pb-10 md:pb-12`}>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -29,7 +30,7 @@ export function PortfolioPage() {
               transition={{ duration: 0.7, ease: "easeOut" }}
               className="h-px w-10 bg-current opacity-25 origin-left"
             />
-            <span className="text-[10px] tracking-[0.18em] opacity-35">OUR WORK</span>
+            <span className={EYEBROW}>OUR WORK</span>
           </div>
           <h1 className="mb-4 text-[24px] md:text-[38px] lg:text-[50px] leading-[1.1] tracking-[-0.02em]">
             Portfolio
@@ -41,7 +42,7 @@ export function PortfolioPage() {
       </section>
 
       {/* Case Studies */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 pb-14 md:pb-18 lg:pb-24">
+      <section className={`${CONTAINER} pb-14 md:pb-18 lg:pb-24`}>
         {/* Top divider */}
         <motion.div
           initial={{ scaleX: 0 }}
@@ -133,6 +134,25 @@ export function PortfolioPage() {
                   </p>
                 </div>
               </div>
+
+              {study.url && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="mt-5 md:mt-6 pt-5 border-t border-border"
+                >
+                  <a
+                    href={study.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-[10px] tracking-[0.18em] opacity-45 hover:opacity-100 transition-opacity duration-200"
+                  >
+                    VIEW SITE <span className="text-[13px] leading-none">↗</span>
+                  </a>
+                </motion.div>
+              )}
             </div>
           </motion.div>
         ))}
@@ -140,13 +160,13 @@ export function PortfolioPage() {
 
       {/* CTA */}
       <section className="bg-primary text-primary-foreground">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 py-14 md:py-18 lg:py-24">
+        <div className={`${CONTAINER} py-14 md:py-18 lg:py-24`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="max-w-[680px] mx-auto text-center"
+            className="max-w-[700px] mx-auto text-center"
           >
             <p className="text-[10px] tracking-[0.2em] opacity-40 mb-4">YOUR BRAND, NEXT</p>
             <h2 className="mb-6 text-[24px] md:text-[32px] lg:text-[42px] leading-[1.15] tracking-[-0.02em]">
