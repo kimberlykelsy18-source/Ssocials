@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { SubmissionsTab } from "./admin/SubmissionsTab";
 import { ReviewsTab } from "./admin/ReviewsTab";
 import { MediaTab } from "./admin/MediaTab";
+import { ImageUrlField } from "./admin/ImageUrlField";
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -236,9 +237,9 @@ export function AdminPage() {
             ].map(({ label, field }) => (
               <div key={field}>
                 <label className="block mb-1.5 text-[12px] tracking-[0.05em]">{label}</label>
-                <input type="url" value={store.homeImages[field as keyof typeof store.homeImages]}
-                  onChange={(e) => store.updateHomeImages({ [field]: e.target.value })}
-                  className={INPUT_CLS} placeholder="https://example.com/image.jpg"
+                <ImageUrlField
+                  value={store.homeImages[field as keyof typeof store.homeImages]}
+                  onChange={(url) => store.updateHomeImages({ [field]: url })}
                 />
                 {store.homeImages[field as keyof typeof store.homeImages] && (
                   <div className="mt-2 aspect-[4/3] border border-border overflow-hidden max-w-[320px]">
@@ -279,9 +280,9 @@ export function AdminPage() {
             <h2 className={SECTION_HEADING}>About Page Images</h2>
             <div>
               <label className="block mb-1.5 text-[12px] tracking-[0.05em]">Hero Image</label>
-              <input type="url" value={store.aboutImages.hero}
-                onChange={(e) => store.updateAboutImages({ hero: e.target.value })}
-                className={INPUT_CLS} placeholder="https://example.com/image.jpg"
+              <ImageUrlField
+                value={store.aboutImages.hero}
+                onChange={(url) => store.updateAboutImages({ hero: url })}
               />
               {store.aboutImages.hero && (
                 <div className="mt-2 aspect-[16/9] border border-border overflow-hidden max-w-[480px]">
@@ -432,19 +433,17 @@ export function AdminPage() {
                   </div>
 
                   <div>
-                    <label className={LABEL_ADMIN}>Custom Image URL <span className="normal-case opacity-60">(optional — overrides auto-screenshot)</span></label>
-                    <input
-                      type="url"
+                    <label className={LABEL_ADMIN}>Custom Image <span className="normal-case opacity-60">(optional — overrides auto-screenshot)</span></label>
+                    <ImageUrlField
                       value={project.image ?? ""}
-                      placeholder="Paste a URL from the Media Library, or leave blank to use auto-screenshot"
-                      onChange={(e) => {
+                      placeholder="Leave blank to use auto-screenshot"
+                      onChange={(url) => {
                         const updated = [...store.devProjects];
-                        updated[index] = { ...updated[index], image: e.target.value || undefined };
+                        updated[index] = { ...updated[index], image: url || undefined };
                         store.updateDevProjects(updated);
                       }}
-                      className={INPUT_CLS}
                     />
-                    <p className="mt-1.5 text-[11px] opacity-40">Upload your screenshot in the Media tab, copy its URL, and paste it here for a crisp custom image.</p>
+                    <p className="mt-1.5 text-[11px] opacity-40">Browse the Media Library or paste a URL directly.</p>
                   </div>
 
                   {project.url && project.url.startsWith("http") && (
