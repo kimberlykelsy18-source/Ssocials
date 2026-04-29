@@ -5,8 +5,8 @@
 //   2. Professional auto-reply to the customer
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
-const ADMIN_EMAIL    = Deno.env.get("ADMIN_EMAIL")    ?? "admin@ssocials.com";
-const FROM_DOMAIN    = Deno.env.get("FROM_DOMAIN")    ?? "ssocials.com";
+const ADMIN_EMAIL    = Deno.env.get("ADMIN_EMAIL")    ?? "admin@ssocials.co";
+const FROM_DOMAIN    = Deno.env.get("FROM_DOMAIN")    ?? "ssocials.co";
 
 // ─── CORS ──────────────────────────────────────────────────────────────────────
 
@@ -271,7 +271,7 @@ function customerEmailHtml(d: FormData): string {
             <table cellpadding="0" cellspacing="0">
               <tr>
                 <td>
-                  <a href="https://www.ssocials.com"
+                  <a href="https://www.ssocials.co"
                      style="display:inline-block;padding:13px 28px;background:#03234d;
                             color:#fffdfb;text-decoration:none;font-size:11px;
                             letter-spacing:0.18em;text-transform:uppercase;">
